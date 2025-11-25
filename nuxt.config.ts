@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  ssr: false,
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
@@ -14,7 +15,7 @@ export default defineNuxtConfig({
       apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL ||
         (process.env.NODE_ENV === 'development'
           ? 'http://localhost:3000'
-          : 'https://backend-lending-earamf6ve-kapils-projects-43e4d3b3.vercel.app')
+          : 'https://backend-lending.vercel.app')
     }
   },
 

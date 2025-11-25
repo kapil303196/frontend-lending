@@ -7,12 +7,14 @@ The frontend automatically switches between local and production API endpoints b
 ## Automatic Configuration
 
 ### Development (localhost)
+- **Frontend URL**: `http://localhost:8080`
 - **API URL**: `http://localhost:3000`
 - Automatically used when running `npm run dev`
 
 ### Production (deployed)
-- **API URL**: `https://backend-lending-earamf6ve-kapils-projects-43e4d3b3.vercel.app`
-- Automatically used when building for production (`npm run build`)
+- **Frontend URL**: `https://mca-frontend.web.app`
+- **API URL**: `https://backend-lending.vercel.app`
+- Automatically used when building for production (`npm run generate`)
 
 ## How It Works
 
@@ -58,6 +60,29 @@ You can override the API URL for specific environments by setting the `NUXT_PUBL
 NUXT_PUBLIC_API_BASE_URL=https://custom-api-url.com
 ```
 
+## Deployment
+
+### Deploy to Firebase Hosting
+
+```bash
+# Generate the static build and deploy
+npm run deploy
+```
+
+This command:
+1. Runs `npm run generate` to create the static site in `.output/public`
+2. Deploys to Firebase Hosting using `firebase deploy --only hosting`
+
+### Manual Deployment Steps
+
+```bash
+# Build the static site
+npm run generate
+
+# Deploy to Firebase
+firebase deploy --only hosting
+```
+
 ## Testing
 
 1. **Local Development**: Run `npm run dev` and verify API calls go to `http://localhost:3000`
@@ -69,3 +94,10 @@ NUXT_PUBLIC_API_BASE_URL=https://custom-api-url.com
    console.log('API URL:', config.public.apiBaseUrl)
    </script>
    ```
+
+## Current Deployment
+
+- **Hosting**: Firebase Hosting
+- **URL**: https://mca-frontend.web.app
+- **Console**: https://console.firebase.google.com/project/logicspark-io/overview
+
