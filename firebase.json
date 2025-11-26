@@ -1,7 +1,7 @@
 {
   "hosting": {
     "site": "mca-frontend",
-    "public": ".output/public",
+    "public": "dist",
     "ignore": [
       "firebase.json",
       "**/.*",
