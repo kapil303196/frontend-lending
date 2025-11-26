@@ -170,26 +170,27 @@
                 Bank Statements ({{ response.bankStatements.length }})
               </h3>
               <div class="space-y-2">
-                <a
+                <button
                   v-for="(file, index) in response.bankStatements"
                   :key="index"
-                  :href="file.url"
-                  target="_blank"
-                  class="flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group"
+                  @click="openFileViewer(file)"
+                  class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group cursor-pointer border border-transparent hover:border-indigo-200"
                 >
                   <div class="flex items-center">
-                    <svg class="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
-                    <div>
+                    <component :is="getFileIcon(file.originalName)" class="w-6 h-6 mr-3" :class="getFileIconColor(file.originalName)" />
+                    <div class="text-left">
                       <p class="text-sm font-medium text-gray-900">{{ file.originalName }}</p>
                       <p class="text-xs text-gray-500">{{ formatFileSize(file.size) }} • {{ formatDate(file.uploadedAt) }}</p>
                     </div>
                   </div>
-                  <svg class="w-5 h-5 text-gray-400 group-hover:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </a>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs text-gray-500 group-hover:text-indigo-600">Click to view</span>
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  </div>
+                </button>
               </div>
             </div>
 
@@ -233,12 +234,21 @@
       </div>
     </div>
   </Transition>
+
+  <!-- File Viewer Modal -->
+  <FileViewerModal
+    v-if="selectedFile"
+    :isOpen="isFileViewerOpen"
+    :file="selectedFile"
+    @close="closeFileViewer"
+  />
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, h } from 'vue';
 import axios from 'axios';
 import { config } from '../config';
+import FileViewerModal from './FileViewerModal.vue';
 
 interface Props {
   isOpen: boolean;
@@ -255,6 +265,10 @@ const formData = computed(() => props.response.formData || {});
 const isUpdatingStatus = ref(false);
 const updateMessage = ref('');
 const updateMessageClass = ref('');
+
+// File viewer state
+const isFileViewerOpen = ref(false);
+const selectedFile = ref<any>(null);
 
 const hasBusinessInfo = computed(() => {
   const fd = formData.value;
@@ -352,6 +366,54 @@ const formatFileSize = (bytes: number) => {
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+};
+
+const openFileViewer = (file: any) => {
+  selectedFile.value = file;
+  isFileViewerOpen.value = true;
+};
+
+const closeFileViewer = () => {
+  isFileViewerOpen.value = false;
+  selectedFile.value = null;
+};
+
+const getFileIcon = (filename: string) => {
+  const ext = filename.split('.').pop()?.toLowerCase();
+  
+  const icons: any = {
+    pdf: () => h('svg', { class: 'w-6 h-6', fill: 'currentColor', viewBox: '0 0 20 20' }, [
+      h('path', { 'fill-rule': 'evenodd', d: 'M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z', 'clip-rule': 'evenodd' })
+    ]),
+    image: () => h('svg', { class: 'w-6 h-6', fill: 'currentColor', viewBox: '0 0 20 20' }, [
+      h('path', { 'fill-rule': 'evenodd', d: 'M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z', 'clip-rule': 'evenodd' })
+    ]),
+    doc: () => h('svg', { class: 'w-6 h-6', fill: 'currentColor', viewBox: '0 0 20 20' }, [
+      h('path', { 'fill-rule': 'evenodd', d: 'M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z', 'clip-rule': 'evenodd' })
+    ]),
+    excel: () => h('svg', { class: 'w-6 h-6', fill: 'currentColor', viewBox: '0 0 20 20' }, [
+      h('path', { 'fill-rule': 'evenodd', d: 'M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z', 'clip-rule': 'evenodd' })
+    ]),
+    default: () => h('svg', { class: 'w-6 h-6', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' }, [
+      h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z' })
+    ])
+  };
+  
+  if (ext === 'pdf') return icons.pdf;
+  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext || '')) return icons.image;
+  if (['doc', 'docx'].includes(ext || '')) return icons.doc;
+  if (['xls', 'xlsx'].includes(ext || '')) return icons.excel;
+  return icons.default;
+};
+
+const getFileIconColor = (filename: string) => {
+  const ext = filename.split('.').pop()?.toLowerCase();
+  
+  if (ext === 'pdf') return 'text-red-600';
+  if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext || '')) return 'text-blue-600';
+  if (['doc', 'docx'].includes(ext || '')) return 'text-blue-700';
+  if (['xls', 'xlsx'].includes(ext || '')) return 'text-green-600';
+  return 'text-gray-600';
 };
 </script>
 
