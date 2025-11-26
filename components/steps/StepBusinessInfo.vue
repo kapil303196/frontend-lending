@@ -70,22 +70,26 @@
       </div>
 
       <div class="md:col-span-2">
-        <AddressAutocomplete
+        <label class="block text-sm font-semibold text-gray-700 mb-2">
+          Street Address <span class="text-red-500">*</span>
+        </label>
+        <input
           v-model="localData.streetAddress"
-          label="Street Address"
-          placeholder="Start typing your address..."
-          :required="true"
-          @addressSelected="handleBusinessAddressSelected"
+          type="text"
+          required
+          class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
+          placeholder="123 Main Street"
         />
       </div>
 
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-2">
-          City
+          City <span class="text-red-500">*</span>
         </label>
         <input
           v-model="localData.city"
           type="text"
+          required
           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
           placeholder="City"
         />
@@ -95,13 +99,14 @@
         <label class="block text-sm font-semibold text-gray-700 mb-2">
           State <span class="text-red-500">*</span>
         </label>
-        <input
+        <select
           v-model="localData.state"
-          type="text"
           required
           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
-          placeholder="State"
-        />
+        >
+          <option value="">Select State</option>
+          <option v-for="state in states" :key="state" :value="state">{{ state }}</option>
+        </select>
       </div>
 
       <div>
@@ -122,9 +127,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import type { FormData } from '../../types'
-import AddressAutocomplete from '../AddressAutocomplete.vue'
+import type { FormData } from '~/types'
 
 const props = defineProps<{
   formData: Partial<FormData>
@@ -140,11 +143,6 @@ watch(localData, (newVal) => {
   emit('update', newVal)
 }, { deep: true })
 
-const handleBusinessAddressSelected = (addressData: any) => {
-  localData.value.streetAddress = addressData.streetAddress
-  localData.value.city = addressData.city
-  localData.value.state = addressData.stateShort
-  localData.value.zipCode = addressData.zipCode
-}
+const states = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY']
 </script>
 

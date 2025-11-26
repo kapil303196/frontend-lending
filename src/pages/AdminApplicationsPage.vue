@@ -2,67 +2,125 @@
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
     <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
           <!-- Logo and Title -->
-          <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <div class="flex items-center justify-center w-10 h-10 bg-indigo-600 rounded-lg mr-3">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="flex items-center">
+            <div class="flex items-center justify-center w-10 h-10 bg-indigo-600 rounded-lg mr-3">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+            <div>
+              <h1 class="text-xl font-bold text-gray-900 leading-tight">Admin Dashboard</h1>
+              <p class="text-xs text-gray-500 hidden sm:block">Applications</p>
+            </div>
+          </div>
+
+          <!-- Desktop Navigation & User Menu -->
+          <div class="hidden lg:flex lg:items-center lg:space-x-8">
+            <nav class="flex space-x-4">
+              <router-link
+                to="/admin/dashboard"
+                class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
+              >
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
+                Overview
+              </router-link>
+              <router-link
+                to="/admin/applications"
+                class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-indigo-50 text-indigo-700"
+              >
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Applications
+              </router-link>
+            </nav>
+
+            <div class="flex items-center gap-4 pl-6 border-l border-gray-200">
+              <div class="text-right">
+                <p class="text-sm font-medium text-gray-900">{{ user?.name || user?.email }}</p>
+                <p class="text-xs text-gray-500">{{ user?.role }}</p>
               </div>
-              <div>
-                <h1 class="text-xl font-bold text-gray-900">Admin Dashboard</h1>
-                <p class="text-sm text-gray-500 hidden sm:block">Applications</p>
-              </div>
+              <button
+                @click="handleLogout"
+                class="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                title="Logout"
+              >
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+              </button>
             </div>
-            <!-- Mobile Menu Toggle -->
-            <button @click="mobileMenuOpen = !mobileMenuOpen" class="lg:hidden p-2">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          </div>
+
+          <!-- Mobile Menu Toggle -->
+          <div class="flex items-center lg:hidden">
+            <button 
+              @click="mobileMenuOpen = !mobileMenuOpen" 
+              class="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+            >
+              <span class="sr-only">Open menu</span>
+              <svg v-if="!mobileMenuOpen" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+              <svg v-else class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
-          
-          <!-- Navigation Links -->
-          <nav :class="['lg:flex items-center gap-6', mobileMenuOpen ? 'flex' : 'hidden']" class="flex-col lg:flex-row gap-2 lg:gap-6">
-            <router-link
-              to="/admin/dashboard"
-              class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
-            >
-              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        </div>
+      </div>
+
+      <!-- Mobile Menu (Collapsible) -->
+      <div v-if="mobileMenuOpen" class="lg:hidden bg-white border-t border-gray-200">
+        <div class="pt-2 pb-3 space-y-1 px-4">
+          <router-link
+            to="/admin/dashboard"
+            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+            @click="mobileMenuOpen = false"
+          >
+            <div class="flex items-center">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
               Overview
-            </router-link>
-            <router-link
-              to="/admin/applications"
-              class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-indigo-50 text-indigo-700"
-            >
-              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            </div>
+          </router-link>
+          <router-link
+            to="/admin/applications"
+            class="block px-3 py-2 rounded-md text-base font-medium bg-indigo-50 text-indigo-700"
+            @click="mobileMenuOpen = false"
+          >
+            <div class="flex items-center">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
               Applications
-            </router-link>
-          </nav>
-
-          <!-- User Menu -->
-          <div class="flex items-center gap-4">
-            <div class="text-right hidden lg:block">
-              <p class="text-sm font-medium text-gray-900">{{ user?.name || user?.email }}</p>
-              <p class="text-xs text-gray-500">{{ user?.role }}</p>
             </div>
-            <button
-              @click="handleLogout"
-              class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-            >
-              <svg class="w-4 h-4 lg:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              <span class="hidden lg:inline">Logout</span>
-            </button>
+          </router-link>
+        </div>
+        <div class="pt-4 pb-4 border-t border-gray-200 px-4">
+          <div class="flex items-center mb-4">
+            <div class="flex-shrink-0">
+              <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-lg">
+                {{ (user?.name || user?.email || 'A').charAt(0).toUpperCase() }}
+              </div>
+            </div>
+            <div class="ml-3">
+              <div class="text-base font-medium text-gray-800">{{ user?.name || 'Admin User' }}</div>
+              <div class="text-sm font-medium text-gray-500">{{ user?.email }}</div>
+            </div>
           </div>
+          <button
+            @click="handleLogout"
+            class="w-full flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+          >
+            Logout
+          </button>
         </div>
       </div>
     </header>
