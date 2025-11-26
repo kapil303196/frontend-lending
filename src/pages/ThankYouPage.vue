@@ -43,17 +43,6 @@
           </ul>
         </div>
 
-        <!-- Contact Info -->
-        <div class="text-gray-600 mb-8">
-          <p class="mb-2">Questions? Contact us:</p>
-          <a href="mailto:sales@funddirect.us" class="text-blue-600 hover:text-blue-700 font-semibold block mb-2">
-            sales@funddirect.us
-          </a>
-          <a href="tel:8006412609" class="text-blue-600 hover:text-blue-700 font-semibold text-lg">
-            (800) 641-2609
-          </a>
-        </div>
-
         <!-- Security Notice -->
         <div class="bg-green-50 border-2 border-green-200 rounded-lg p-4 flex items-center justify-center space-x-3">
           <svg class="w-6 h-6 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
