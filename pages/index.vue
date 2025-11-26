@@ -11,13 +11,13 @@
         </h1>
         
         <p class="text-lg text-gray-600 mb-8">
-          Business Loan Application Verification Portal
+          Business Funding Application Verification Portal
         </p>
         
         <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-6 mb-8">
           <h2 class="text-xl font-bold text-gray-900 mb-3">Getting Started</h2>
           <p class="text-gray-700 mb-4">
-            To verify your loan application, you'll need the unique verification link that was sent to you via email.
+            To verify your funding application, you'll need the unique verification link that was sent to you via email.
           </p>
           <p class="text-sm text-gray-600">
             The link format: <code class="bg-white px-2 py-1 rounded text-blue-600 font-mono">/YOUR-UNIQUE-ID</code>
@@ -61,7 +61,7 @@
 
 <script setup lang="ts">
 useHead({
-  title: 'Fund Direct - Business Loan Verification'
+  title: 'Fund Direct - Business Funding Verification'
 })
 </script>
 

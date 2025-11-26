@@ -21,11 +21,11 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'Fund Direct - Business Loan Application',
+      title: 'Fund Direct - Business Funding Application',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Fund Direct business loan verification form' }
+        { name: 'description', content: 'Fund Direct business funding verification form' }
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }

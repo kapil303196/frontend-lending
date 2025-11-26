@@ -9,7 +9,7 @@
           </div>
           <div>
             <h1 class="text-2xl font-bold text-gray-900">Fund Direct</h1>
-            <p class="text-xs text-gray-500">Business Loan Verification</p>
+            <p class="text-xs text-gray-500">Business Funding Verification</p>
           </div>
         </div>
       </div>
