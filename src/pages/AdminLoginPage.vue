@@ -88,21 +88,43 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuth } from '../composables/useAuth';
+import { useAdminConfig } from '../composables/useAdminConfig';
 
 const router = useRouter();
-const { login, isLoading, error } = useAuth();
+const { login, isLoading, error: authError } = useAuth();
+const { config: adminConfig, refreshConfig } = useAdminConfig();
 
 const email = ref('');
 const password = ref('');
+const error = ref<string | null>(null);
 
 const handleLogin = async () => {
+  error.value = null;
+  
   const result = await login({
     email: email.value,
     password: password.value
   });
 
   if (result.success) {
-    router.push('/admin/dashboard');
+    try {
+      // Fetch config to decide where to redirect
+      await refreshConfig();
+      
+      if (adminConfig.value.pages.overview) {
+        router.push('/admin/dashboard');
+      } else if (adminConfig.value.pages.applications) {
+        router.push('/admin/applications');
+      } else {
+        error.value = 'No accessible admin modules found. Please contact support.';
+      }
+    } catch (err) {
+      console.error('Config fetch failed:', err);
+      // Fallback to dashboard if config fails
+      router.push('/admin/dashboard');
+    }
+  } else {
+    error.value = result.error || 'Login failed';
   }
 };
 </script>
