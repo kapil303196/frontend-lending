@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
     <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="w-full px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
           <!-- Logo and Title -->
           <div class="flex items-center">
@@ -130,7 +130,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="w-full px-4 sm:px-6 lg:px-8 py-8">
       <!-- Config Loading State -->
       <div v-if="!isLoaded" class="flex items-center justify-center py-12">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
@@ -248,7 +248,7 @@
       </div>
 
       <!-- Response Cards Grid -->
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 lg:gap-6">
         <ResponseCard
           v-for="response in responses"
           :key="response._id"
