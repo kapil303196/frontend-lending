@@ -7,7 +7,8 @@ import HomePage from './pages/HomePage.vue'
 import FormPage from './pages/FormPage.vue'
 import ThankYouPage from './pages/ThankYouPage.vue'
 import AdminLoginPage from './pages/AdminLoginPage.vue'
-import AdminDashboardPage from './pages/AdminDashboardPage.vue'
+import AdminOverviewPage from './pages/AdminOverviewPage.vue'
+import AdminApplicationsPage from './pages/AdminApplicationsPage.vue'
 import { useAuth } from './composables/useAuth'
 
 const router = createRouter({
@@ -22,7 +23,12 @@ const router = createRouter({
     },
     { 
       path: '/admin/dashboard', 
-      component: AdminDashboardPage,
+      component: AdminOverviewPage,
+      meta: { requiresAuth: true }
+    },
+    { 
+      path: '/admin/applications', 
+      component: AdminApplicationsPage,
       meta: { requiresAuth: true }
     },
     { path: '/:uniqueId', component: FormPage }

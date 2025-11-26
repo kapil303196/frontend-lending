@@ -14,7 +14,7 @@
               </div>
               <div>
                 <h1 class="text-xl font-bold text-gray-900">Admin Dashboard</h1>
-                <p class="text-sm text-gray-500 hidden sm:block">Manage applications</p>
+                <p class="text-sm text-gray-500 hidden sm:block">Applications</p>
               </div>
             </div>
             <!-- Mobile Menu Toggle -->
@@ -27,34 +27,24 @@
           
           <!-- Navigation Links -->
           <nav :class="['lg:flex items-center gap-6', mobileMenuOpen ? 'flex' : 'hidden']" class="flex-col lg:flex-row gap-2 lg:gap-6">
-            <button
-              @click="currentView = 'overview'"
-              :class="[
-                'flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                currentView === 'overview'
-                  ? 'bg-indigo-50 text-indigo-700'
-                  : 'text-gray-700 hover:bg-gray-100'
-              ]"
+            <router-link
+              to="/admin/dashboard"
+              class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
             >
               <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
               Overview
-            </button>
-            <button
-              @click="currentView = 'applications'"
-              :class="[
-                'flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                currentView === 'applications'
-                  ? 'bg-indigo-50 text-indigo-700'
-                  : 'text-gray-700 hover:bg-gray-100'
-              ]"
+            </router-link>
+            <router-link
+              to="/admin/applications"
+              class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-indigo-50 text-indigo-700"
             >
               <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
               Applications
-            </button>
+            </router-link>
           </nav>
 
           <!-- User Menu -->
@@ -78,176 +68,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
-      <!-- Overview Section -->
-      <div v-if="currentView === 'overview'" class="space-y-6">
-        <!-- Stats -->
-        <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-6">
-          <div @click="handleStatClick('')" class="cursor-pointer transform transition-transform hover:scale-105">
-            <StatCard 
-              title="Total" 
-              :value="stats.total" 
-              icon="collection"
-              color="indigo"
-              :isActive="activeStatFilter === ''"
-            />
-          </div>
-          <div @click="handleStatClick('pending')" class="cursor-pointer transform transition-transform hover:scale-105">
-            <StatCard 
-              title="Pending" 
-              :value="stats.byStatus.pending" 
-              icon="clock"
-              color="yellow"
-              :isActive="activeStatFilter === 'pending'"
-            />
-          </div>
-          <div @click="handleStatClick('submitted')" class="cursor-pointer transform transition-transform hover:scale-105">
-            <StatCard 
-              title="Submitted" 
-              :value="stats.byStatus.submitted" 
-              icon="document"
-              color="blue"
-              :isActive="activeStatFilter === 'submitted'"
-            />
-          </div>
-          <div @click="handleStatClick('approved')" class="cursor-pointer transform transition-transform hover:scale-105">
-            <StatCard 
-              title="Approved" 
-              :value="stats.byStatus.approved" 
-              icon="check"
-              color="green"
-              :isActive="activeStatFilter === 'approved'"
-            />
-          </div>
-          <div @click="handleStatClick('rejected')" class="cursor-pointer transform transition-transform hover:scale-105">
-            <StatCard 
-              title="Rejected" 
-              :value="stats.byStatus.rejected" 
-              icon="x"
-              color="red"
-              :isActive="activeStatFilter === 'rejected'"
-            />
-          </div>
-        </div>
-
-        <!-- Chart -->
-        <StatusChart :stats="stats" />
-
-        <!-- Quick Actions -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <button
-              @click="currentView = 'applications'; filterByStatus('pending')"
-              class="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 transition-all"
-            >
-              <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center mr-3">
-                <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div class="text-left">
-                <p class="text-sm font-medium text-gray-900">Review Pending</p>
-                <p class="text-xs text-gray-500">{{ stats.byStatus.pending }} items</p>
-              </div>
-            </button>
-            <button
-              @click="currentView = 'applications'; filterByStatus('submitted')"
-              class="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 transition-all"
-            >
-              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <div class="text-left">
-                <p class="text-sm font-medium text-gray-900">View Submitted</p>
-                <p class="text-xs text-gray-500">{{ stats.byStatus.submitted }} items</p>
-              </div>
-            </button>
-            <button
-              @click="currentView = 'applications'; clearFilters()"
-              class="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 transition-all"
-            >
-              <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-3">
-                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
-              </div>
-              <div class="text-left">
-                <p class="text-sm font-medium text-gray-900">All Applications</p>
-                <p class="text-xs text-gray-500">View all</p>
-              </div>
-            </button>
-            <button
-              @click="currentView = 'applications'; sortBy = 'amount'"
-              class="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 transition-all"
-            >
-              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
-                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div class="text-left">
-                <p class="text-sm font-medium text-gray-900">By Amount</p>
-                <p class="text-xs text-gray-500">Sort by value</p>
-              </div>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Applications Section -->
-      <div v-else-if="currentView === 'applications'" class="space-y-6">
-        <!-- Stats -->
-        <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-6">
-        <div @click="handleStatClick('')" class="cursor-pointer transform transition-transform hover:scale-105">
-          <StatCard 
-            title="Total Responses" 
-            :value="stats.total" 
-            icon="collection"
-            color="indigo"
-            :isActive="activeStatFilter === ''"
-          />
-        </div>
-        <div @click="handleStatClick('pending')" class="cursor-pointer transform transition-transform hover:scale-105">
-          <StatCard 
-            title="Pending" 
-            :value="stats.byStatus.pending" 
-            icon="clock"
-            color="yellow"
-            :isActive="activeStatFilter === 'pending'"
-          />
-        </div>
-        <div @click="handleStatClick('submitted')" class="cursor-pointer transform transition-transform hover:scale-105">
-          <StatCard 
-            title="Submitted" 
-            :value="stats.byStatus.submitted" 
-            icon="document"
-            color="blue"
-            :isActive="activeStatFilter === 'submitted'"
-          />
-        </div>
-        <div @click="handleStatClick('approved')" class="cursor-pointer transform transition-transform hover:scale-105">
-          <StatCard 
-            title="Approved" 
-            :value="stats.byStatus.approved" 
-            icon="check"
-            color="green"
-            :isActive="activeStatFilter === 'approved'"
-          />
-        </div>
-        <div @click="handleStatClick('rejected')" class="cursor-pointer transform transition-transform hover:scale-105">
-          <StatCard 
-            title="Rejected" 
-            :value="stats.byStatus.rejected" 
-            icon="x"
-            color="red"
-            :isActive="activeStatFilter === 'rejected'"
-          />
-        </div>
-      </div>
-
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Filters and Search -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
         <div class="flex flex-col gap-4">
@@ -329,34 +150,29 @@
       </div>
 
       <!-- Loading State -->
-      <div v-if="isLoading" class="flex items-center justify-center py-12">
+      <div v-if="isLoading && pagination.page === 1" class="flex items-center justify-center py-12">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
       </div>
 
       <!-- Error State -->
       <div v-else-if="error" class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-        <svg class="w-12 h-12 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <p class="text-red-800 font-medium">{{ error }}</p>
-        <button @click="loadResponses" class="mt-4 text-red-600 hover:text-red-700 font-medium">
-          Try Again
-        </button>
+        <p class="text-red-800">{{ error }}</p>
+        <button @click="loadResponses" class="mt-4 text-red-600 hover:text-red-700 font-medium">Try Again</button>
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="!filteredResponses.length" class="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
+      <div v-else-if="responses.length === 0" class="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
         <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
-        <p class="text-gray-600 font-medium">No responses found</p>
-        <p class="text-gray-500 text-sm mt-2">There are no user responses matching your criteria.</p>
+        <p class="text-gray-600 font-medium">No applications found</p>
+        <p class="text-gray-500 text-sm mt-2">Try adjusting your filters</p>
       </div>
 
       <!-- Response Cards Grid -->
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
         <ResponseCard
-          v-for="response in filteredResponses"
+          v-for="response in responses"
           :key="response._id"
           :response="response"
           @click="openModal(response)"
@@ -386,7 +202,6 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
         </svg>
       </button>
-      </div>
     </main>
 
     <!-- Response Modal -->
@@ -401,47 +216,53 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, onUnmounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 import { useAuth } from '../composables/useAuth';
 import ResponseCard from '../components/ResponseCard.vue';
 import ResponseModal from '../components/ResponseModal.vue';
-import StatusChart from '../components/StatusChart.vue';
 import { config } from '../config';
 
 const router = useRouter();
+const route = useRoute();
 const { user, logout } = useAuth();
 
 const responses = ref<any[]>([]);
-const stats = ref({
-  total: 0,
-  byStatus: {
-    pending: 0,
-    submitted: 0,
-    approved: 0,
-    rejected: 0
-  }
-});
 const isLoading = ref(false);
 const isLoadingMore = ref(false);
 const error = ref<string | null>(null);
-
-const searchQuery = ref('');
-const statusFilter = ref('');
-const sortBy = ref('createdAt');
-const activeStatFilter = ref(''); // Track which stat card is active
-const currentView = ref('overview'); // 'overview' or 'applications'
 const mobileMenuOpen = ref(false);
 const showScrollTop = ref(false);
+
+const searchQuery = ref('');
+const statusFilter = ref((route.query.status as string) || '');
+const sortBy = ref((route.query.sortBy as string) || 'createdAt');
 const pagination = ref({
   page: 1,
-  limit: 20, // Reduced for infinite scroll
+  limit: 20,
   total: 0,
   pages: 0
 });
 
-const hasMore = computed(() => pagination.value.page < pagination.value.pages);
+// Initialize active stat filter from query param
+const activeStatFilter = ref((route.query.status as string) || ''); 
 
+// Watch for route query changes to update filters
+watch(() => route.query, (newQuery) => {
+  if (newQuery.status !== undefined) {
+    statusFilter.value = (newQuery.status as string) || '';
+    activeStatFilter.value = (newQuery.status as string) || '';
+  }
+  if (newQuery.sortBy !== undefined) {
+    sortBy.value = (newQuery.sortBy as string) || 'createdAt';
+  }
+  // Trigger reload
+  pagination.value.page = 1;
+  responses.value = [];
+  loadResponses();
+}, { deep: true });
+
+const hasMore = computed(() => pagination.value.page < pagination.value.pages);
 const isModalOpen = ref(false);
 const selectedResponse = ref<any>(null);
 
@@ -487,49 +308,15 @@ watch(searchQuery, () => {
   clearTimeout(searchDebounce);
   searchDebounce = setTimeout(() => {
     pagination.value.page = 1;
-    responses.value = []; // Clear for fresh load
+    responses.value = [];
     loadResponses();
   }, 300);
 });
 
 watch([statusFilter, sortBy], () => {
   pagination.value.page = 1;
-  responses.value = []; // Clear for fresh load
+  responses.value = [];
   loadResponses();
-});
-
-// Computed - no longer needed for client-side filtering since we do it server-side
-const filteredResponses = computed(() => {
-  return responses.value;
-});
-
-// Infinite Scroll
-const handleScroll = () => {
-  const scrollY = window.scrollY;
-  const windowHeight = window.innerHeight;
-  const documentHeight = document.documentElement.scrollHeight;
-  
-  // Show scroll to top button
-  showScrollTop.value = scrollY > 500;
-  
-  // Load more when user is near bottom (200px from bottom)
-  if (scrollY + windowHeight >= documentHeight - 200) {
-    if (!isLoading.value && !isLoadingMore.value && hasMore.value) {
-      loadMore();
-    }
-  }
-};
-
-const scrollToTop = () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-};
-
-onMounted(() => {
-  window.addEventListener('scroll', handleScroll);
-});
-
-onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll);
 });
 
 // Methods
@@ -551,7 +338,7 @@ const loadResponses = async (append = false) => {
       params.status = statusFilter.value;
     }
 
-    // Parse sortBy to get field and order
+    // Parse sortBy
     let sortField = 'createdAt';
     let sortOrder = 'desc';
     
@@ -566,12 +353,8 @@ const loadResponses = async (append = false) => {
     params.sortBy = sortField;
     params.sortOrder = sortOrder;
 
-    const [responsesRes, statsRes] = await Promise.all([
-      axios.get(`${config.apiUrl}/responses`, { params }),
-      axios.get(`${config.apiUrl}/responses/stats`)
-    ]);
-
-    let allResponses = responsesRes.data.data;
+    const response = await axios.get(`${config.apiUrl}/responses`, { params });
+    let allResponses = response.data.data;
 
     // Apply client-side search filter only (backend doesn't have text search)
     if (searchQuery.value) {
@@ -600,8 +383,7 @@ const loadResponses = async (append = false) => {
       responses.value = allResponses;
     }
     
-    pagination.value = responsesRes.data.pagination;
-    stats.value = statsRes.data.data;
+    pagination.value = response.data.pagination;
 
   } catch (err: any) {
     error.value = err.response?.data?.message || 'Failed to load responses';
@@ -619,27 +401,12 @@ const loadMore = () => {
   }
 };
 
-const filterByStatus = (status: string) => {
-  statusFilter.value = status;
-  activeStatFilter.value = status;
-  currentView.value = 'applications';
-};
-
-const handleStatClick = (status: string) => {
-  activeStatFilter.value = status;
-  statusFilter.value = status;
-  currentView.value = 'applications';
-  // Watch will trigger loadResponses automatically
-};
-
 const clearFilters = () => {
   searchQuery.value = '';
   statusFilter.value = '';
-  activeStatFilter.value = '';
   sortBy.value = 'createdAt';
   pagination.value.page = 1;
   responses.value = [];
-  // Watch will trigger loadResponses automatically
 };
 
 const openModal = (response: any) => {
@@ -653,14 +420,10 @@ const closeModal = () => {
 };
 
 const handleStatusUpdate = (updatedResponse: any) => {
-  // Find and update the response in the list
   const index = responses.value.findIndex(r => r._id === updatedResponse._id);
   if (index !== -1) {
     responses.value[index] = updatedResponse;
   }
-  
-  // Reload data to update statistics
-  loadResponses();
 };
 
 const handleLogout = () => {
@@ -668,61 +431,32 @@ const handleLogout = () => {
   router.push('/admin/login');
 };
 
-onMounted(() => {
-  loadResponses();
-  currentView.value = 'applications'; // Start with applications view
-});
-</script>
-
-<script lang="ts">
-// StatCard component
-import { defineComponent, h } from 'vue';
-
-const StatCard = defineComponent({
-  props: {
-    title: String,
-    value: Number,
-    icon: String,
-    color: String,
-    isActive: Boolean
-  },
-  setup(props) {
-    const colorClasses = {
-      indigo: 'bg-indigo-100 text-indigo-600',
-      yellow: 'bg-yellow-100 text-yellow-600',
-      blue: 'bg-blue-100 text-blue-600',
-      green: 'bg-green-100 text-green-600',
-      red: 'bg-red-100 text-red-600'
-    };
-
-    const icons: any = {
-      collection: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10',
-      clock: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
-      document: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
-      check: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
-      x: 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z'
-    };
-
-    const cardClass = props.isActive 
-      ? 'bg-white rounded-xl shadow-lg border-2 border-indigo-500 p-6 ring-2 ring-indigo-200' 
-      : 'bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow';
-
-    return () => h('div', { class: cardClass }, [
-      h('div', { class: 'flex items-center justify-between' }, [
-        h('div', [
-          h('p', { class: 'text-sm font-medium text-gray-600 mb-1' }, props.title),
-          h('p', { class: 'text-3xl font-bold text-gray-900' }, props.value)
-        ]),
-        h('div', { class: `w-12 h-12 rounded-lg ${colorClasses[props.color as keyof typeof colorClasses]} flex items-center justify-center` }, [
-          h('svg', { class: 'w-6 h-6', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' }, [
-            h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: icons[props.icon || 'collection'] })
-          ])
-        ])
-      ])
-    ]);
+// Infinite Scroll
+const handleScroll = () => {
+  const scrollY = window.scrollY;
+  const windowHeight = window.innerHeight;
+  const documentHeight = document.documentElement.scrollHeight;
+  
+  showScrollTop.value = scrollY > 500;
+  
+  if (scrollY + windowHeight >= documentHeight - 200) {
+    if (!isLoading.value && !isLoadingMore.value && hasMore.value) {
+      loadMore();
+    }
   }
+};
+
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll);
+  loadResponses();
 });
 
-export { StatCard };
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
+});
 </script>
 
