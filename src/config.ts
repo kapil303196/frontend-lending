@@ -1,5 +1,7 @@
 export const config = {
   apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 
-    (import.meta.env.DEV ? 'http://localhost:3000' : 'https://backend-lending.vercel.app')
+    (import.meta.env.DEV ? 'http://localhost:3000' : 'https://backend-lending.vercel.app'),
+  apiUrl: import.meta.env.VITE_API_URL || 
+    (import.meta.env.DEV ? 'http://localhost:3000/api' : 'https://backend-lending.vercel.app/api')
 }
 
