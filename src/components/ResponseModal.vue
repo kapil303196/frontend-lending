@@ -43,7 +43,7 @@
                 </span>
                 
                 <!-- Status Update Buttons -->
-                <div class="flex items-center gap-2">
+                <div v-if="adminConfig.features.allowStatusUpdate" class="flex items-center gap-2">
                   <button
                     v-if="response.status !== 'pending'"
                     @click="updateStatus('pending')"
@@ -80,7 +80,7 @@
               </div>
               
               <!-- Success/Error Messages -->
-              <div v-if="updateMessage" class="mt-3 p-3 rounded-lg" :class="updateMessageClass">
+              <div v-if="updateMessage && adminConfig.features.allowStatusUpdate" class="mt-3 p-3 rounded-lg" :class="updateMessageClass">
                 <p class="text-sm">{{ updateMessage }}</p>
               </div>
             </div>
@@ -245,10 +245,25 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, h } from 'vue';
+import { computed, ref, h, onMounted, defineComponent } from 'vue';
 import axios from 'axios';
 import { config } from '../config';
+import { useAdminConfig } from '../composables/useAdminConfig';
 import FileViewerModal from './FileViewerModal.vue';
+
+// InfoItem component
+const InfoItem = defineComponent({
+  props: {
+    label: String,
+    value: [String, Number]
+  },
+  setup(props) {
+    return () => h('div', { class: 'space-y-1' }, [
+      h('p', { class: 'text-xs font-medium text-gray-500 uppercase tracking-wider' }, props.label),
+      h('p', { class: 'text-sm text-gray-900 font-medium' }, props.value || 'N/A')
+    ]);
+  }
+});
 
 interface Props {
   isOpen: boolean;
@@ -261,8 +276,13 @@ const emit = defineEmits<{
   (e: 'statusUpdated', response: any): void;
 }>();
 
+const { config: adminConfig, fetchConfig } = useAdminConfig();
 const formData = computed(() => props.response.formData || {});
 const isUpdatingStatus = ref(false);
+
+onMounted(() => {
+  fetchConfig();
+});
 const updateMessage = ref('');
 const updateMessageClass = ref('');
 
@@ -415,26 +435,6 @@ const getFileIconColor = (filename: string) => {
   if (['xls', 'xlsx'].includes(ext || '')) return 'text-green-600';
   return 'text-gray-600';
 };
-</script>
-
-<script lang="ts">
-// InfoItem component
-import { defineComponent, h } from 'vue';
-
-const InfoItem = defineComponent({
-  props: {
-    label: String,
-    value: [String, Number]
-  },
-  setup(props) {
-    return () => h('div', { class: 'space-y-1' }, [
-      h('p', { class: 'text-xs font-medium text-gray-500 uppercase tracking-wider' }, props.label),
-      h('p', { class: 'text-sm text-gray-900 font-medium' }, props.value || 'N/A')
-    ]);
-  }
-});
-
-export { InfoItem };
 </script>
 
 <style scoped>

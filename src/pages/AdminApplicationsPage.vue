@@ -21,6 +21,7 @@
           <div class="hidden lg:flex lg:items-center lg:space-x-8">
             <nav class="flex space-x-4">
               <router-link
+                v-if="adminConfig.pages.overview"
                 to="/admin/dashboard"
                 class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
               >
@@ -30,6 +31,7 @@
                 Overview
               </router-link>
               <router-link
+                v-if="adminConfig.pages.applications"
                 to="/admin/applications"
                 class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-indigo-50 text-indigo-700"
               >
@@ -79,6 +81,7 @@
       <div v-if="mobileMenuOpen" class="lg:hidden bg-white border-t border-gray-200">
         <div class="pt-2 pb-3 space-y-1 px-4">
           <router-link
+            v-if="adminConfig.pages.overview"
             to="/admin/dashboard"
             class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
             @click="mobileMenuOpen = false"
@@ -91,6 +94,7 @@
             </div>
           </router-link>
           <router-link
+            v-if="adminConfig.pages.applications"
             to="/admin/applications"
             class="block px-3 py-2 rounded-md text-base font-medium bg-indigo-50 text-indigo-700"
             @click="mobileMenuOpen = false"
@@ -127,12 +131,28 @@
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Filters and Search -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+      <!-- Config Loading State -->
+      <div v-if="!isLoaded" class="flex items-center justify-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+
+      <!-- Page Disabled State -->
+      <div v-else-if="!adminConfig.pages.applications" class="text-center py-20 bg-white rounded-xl shadow-sm border border-gray-200">
+        <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+        </svg>
+        <h2 class="text-xl font-bold text-gray-900 mb-2">Page Disabled</h2>
+        <p class="text-gray-500">The applications list is currently disabled by the administrator configuration.</p>
+      </div>
+
+      <div v-else>
+        <!-- Filters and Search -->
+        <div v-if="adminConfig.filters.search || adminConfig.filters.statusDropdown || adminConfig.filters.sorting" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+          <!-- ... filters content ... -->
         <div class="flex flex-col gap-4">
           <!-- Search and Status Filter Row -->
           <div class="flex flex-col sm:flex-row gap-4">
-            <div class="flex-1">
+            <div v-if="adminConfig.filters.search" class="flex-1">
               <label class="block text-sm font-medium text-gray-700 mb-2">
                 <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -146,7 +166,7 @@
                 class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
               />
             </div>
-            <div class="sm:w-48">
+            <div v-if="adminConfig.filters.statusDropdown" class="sm:w-48">
               <label class="block text-sm font-medium text-gray-700 mb-2">
                 <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -167,7 +187,7 @@
           </div>
 
           <!-- Sort Options Row -->
-          <div class="border-t border-gray-200 pt-4">
+          <div v-if="adminConfig.filters.sorting" class="border-t border-gray-200 pt-4">
             <div class="flex items-center justify-between mb-3">
               <label class="text-sm font-medium text-gray-700 flex items-center">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -215,7 +235,7 @@
       <!-- Error State -->
       <div v-else-if="error" class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
         <p class="text-red-800">{{ error }}</p>
-        <button @click="loadResponses" class="mt-4 text-red-600 hover:text-red-700 font-medium">Try Again</button>
+        <button @click="loadResponses(false)" class="mt-4 text-red-600 hover:text-red-700 font-medium">Try Again</button>
       </div>
 
       <!-- Empty State -->
@@ -260,6 +280,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
         </svg>
       </button>
+      </div>
     </main>
 
     <!-- Response Modal -->
@@ -277,6 +298,7 @@ import { ref, computed, onMounted, watch, onUnmounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 import { useAuth } from '../composables/useAuth';
+import { useAdminConfig } from '../composables/useAdminConfig';
 import ResponseCard from '../components/ResponseCard.vue';
 import ResponseModal from '../components/ResponseModal.vue';
 import { config } from '../config';
@@ -284,9 +306,10 @@ import { config } from '../config';
 const router = useRouter();
 const route = useRoute();
 const { user, logout } = useAuth();
+const { config: adminConfig, fetchConfig, isLoaded } = useAdminConfig();
 
 const responses = ref<any[]>([]);
-const isLoading = ref(false);
+const isLoading = ref(false); // This is for responses loading
 const isLoadingMore = ref(false);
 const error = ref<string | null>(null);
 const mobileMenuOpen = ref(false);
@@ -509,6 +532,7 @@ const scrollToTop = () => {
 };
 
 onMounted(() => {
+  fetchConfig();
   window.addEventListener('scroll', handleScroll);
   loadResponses();
 });

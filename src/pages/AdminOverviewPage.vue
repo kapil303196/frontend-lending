@@ -21,6 +21,7 @@
           <div class="hidden lg:flex lg:items-center lg:space-x-8">
             <nav class="flex space-x-4">
               <router-link
+                v-if="adminConfig.pages.overview"
                 to="/admin/dashboard"
                 class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors bg-indigo-50 text-indigo-700"
               >
@@ -30,6 +31,7 @@
                 Overview
               </router-link>
               <router-link
+                v-if="adminConfig.pages.applications"
                 to="/admin/applications"
                 class="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors text-gray-700 hover:bg-gray-100"
               >
@@ -79,6 +81,7 @@
       <div v-if="mobileMenuOpen" class="lg:hidden bg-white border-t border-gray-200">
         <div class="pt-2 pb-3 space-y-1 px-4">
           <router-link
+            v-if="adminConfig.pages.overview"
             to="/admin/dashboard"
             class="block px-3 py-2 rounded-md text-base font-medium bg-indigo-50 text-indigo-700"
             @click="mobileMenuOpen = false"
@@ -91,6 +94,7 @@
             </div>
           </router-link>
           <router-link
+            v-if="adminConfig.pages.applications"
             to="/admin/applications"
             class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
             @click="mobileMenuOpen = false"
@@ -127,7 +131,21 @@
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div v-if="isLoading" class="flex items-center justify-center py-12">
+      <!-- Config Loading State -->
+      <div v-if="!isLoaded" class="flex items-center justify-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+
+      <!-- Page Disabled State -->
+      <div v-else-if="!adminConfig.pages.overview" class="text-center py-20 bg-white rounded-xl shadow-sm border border-gray-200">
+        <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+        </svg>
+        <h2 class="text-xl font-bold text-gray-900 mb-2">Page Disabled</h2>
+        <p class="text-gray-500">The overview dashboard is currently disabled by the administrator configuration.</p>
+      </div>
+
+      <div v-else-if="isLoading" class="flex items-center justify-center py-12">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
       </div>
 
@@ -184,18 +202,31 @@
 
         <!-- Charts Row 1 -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <StatusChart :stats="{ total: dashboardStats.statusCounts.total, byStatus: dashboardStats.statusCounts }" />
+          <StatusChart 
+            v-if="adminConfig.charts.statusDistribution"
+            :stats="{ total: dashboardStats.statusCounts.total, byStatus: dashboardStats.statusCounts }" 
+          />
           
           <!-- Funding chart handles its own navigation -->
-          <div @click="navigateToAppsSort('createdAt')" class="cursor-pointer h-full transition-shadow hover:shadow-md rounded-xl">
+          <div 
+            v-if="adminConfig.charts.fundingTrend"
+            @click="navigateToAppsSort('createdAt')" 
+            class="cursor-pointer h-full transition-shadow hover:shadow-md rounded-xl"
+          >
             <FundingLineChart :data="dashboardStats.fundingPerDay" />
           </div>
         </div>
 
         <!-- Charts Row 2 -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <AmountStatusChart :data="dashboardStats.amountStats" />
-          <RevenueChart :data="dashboardStats.revenueVsLending" />
+          <AmountStatusChart 
+            v-if="adminConfig.charts.amountDistribution"
+            :data="dashboardStats.amountStats" 
+          />
+          <RevenueChart 
+            v-if="adminConfig.charts.revenueVsLending"
+            :data="dashboardStats.revenueVsLending" 
+          />
         </div>
       </div>
     </main>
@@ -207,6 +238,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import { useAuth } from '../composables/useAuth';
+import { useAdminConfig } from '../composables/useAdminConfig';
 import { config } from '../config';
 import StatusChart from '../components/StatusChart.vue';
 import FundingLineChart from '../components/charts/FundingLineChart.vue';
@@ -216,8 +248,9 @@ import { StatCard } from '../pages/AdminDashboardPage.vue'; // Reuse StatCard co
 
 const router = useRouter();
 const { user, logout } = useAuth();
+const { config: adminConfig, fetchConfig, isLoaded } = useAdminConfig();
 const mobileMenuOpen = ref(false);
-const isLoading = ref(false);
+const isLoading = ref(false); // This is for stats loading, not config
 const error = ref<string | null>(null);
 
 const dashboardStats = ref({
@@ -274,6 +307,7 @@ const handleLogout = () => {
 };
 
 onMounted(() => {
+  fetchConfig();
   loadStats();
 });
 </script>
