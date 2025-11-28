@@ -6,36 +6,30 @@
         <h2 class="text-2xl font-bold text-gray-900">Verify Your Information</h2>
         <span class="text-sm text-gray-500">Step {{ currentStep + 1 }} of {{ steps.length }}</span>
       </div>
-      
+
       <!-- Desktop Progress Bar -->
       <div class="hidden md:flex items-center justify-between">
         <div v-for="(step, index) in steps" :key="index" class="flex-1 flex items-center">
           <div class="flex flex-col items-center flex-1">
-            <div 
+            <div
               class="w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all duration-300"
               :class="[
                 index < currentStep ? 'bg-green-500 text-white' : '',
                 index === currentStep ? 'bg-blue-600 text-white ring-4 ring-blue-100' : '',
                 index > currentStep ? 'bg-gray-200 text-gray-500' : ''
-              ]"
-            >
+              ]">
               <svg v-if="index < currentStep" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
               </svg>
               <span v-else>{{ index + 1 }}</span>
             </div>
-            <span 
-              class="mt-2 text-xs font-medium text-center"
-              :class="index <= currentStep ? 'text-gray-900' : 'text-gray-400'"
-            >
+            <span class="mt-2 text-xs font-medium text-center"
+              :class="index <= currentStep ? 'text-gray-900' : 'text-gray-400'">
               {{ step.title }}
             </span>
           </div>
-          <div 
-            v-if="index < steps.length - 1" 
-            class="flex-1 h-1 mx-2 rounded transition-all duration-300"
-            :class="index < currentStep ? 'bg-green-500' : 'bg-gray-200'"
-          />
+          <div v-if="index < steps.length - 1" class="flex-1 h-1 mx-2 rounded transition-all duration-300"
+            :class="index < currentStep ? 'bg-green-500' : 'bg-gray-200'" />
         </div>
       </div>
 
@@ -46,10 +40,8 @@
           <span class="text-sm text-gray-500">{{ currentStep + 1 }}/{{ steps.length }}</span>
         </div>
         <div class="w-full bg-gray-200 rounded-full h-2">
-          <div 
-            class="bg-blue-600 h-2 rounded-full transition-all duration-300"
-            :style="{ width: `${((currentStep + 1) / steps.length) * 100}%` }"
-          />
+          <div class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+            :style="{ width: `${((currentStep + 1) / steps.length) * 100}%` }" />
         </div>
       </div>
     </div>
@@ -57,22 +49,13 @@
     <!-- Form Content -->
     <div class="bg-white rounded-xl shadow-sm p-6 md:p-8">
       <transition name="slide-fade" mode="out-in">
-        <component 
-          :is="currentStepComponent" 
-          :form-data="formData"
-          :mca-data="mcaData"
-          @update="updateFormData"
-        />
+        <component :is="currentStepComponent" :form-data="formData" :mca-data="mcaData" @update="updateFormData" />
       </transition>
 
       <!-- Navigation Buttons -->
       <div class="flex flex-col sm:flex-row gap-4 mt-8 pt-6 border-t">
-        <button
-          v-if="currentStep > 0"
-          @click="previousStep"
-          type="button"
-          class="w-full sm:w-auto px-6 py-3 border-2 border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
-        >
+        <button v-if="currentStep > 0" @click="previousStep" type="button"
+          class="w-full sm:w-auto px-6 py-3 border-2 border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
           <span class="flex items-center justify-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -80,13 +63,9 @@
             Previous
           </span>
         </button>
-        
-        <button
-          v-if="currentStep < steps.length - 1"
-          @click="nextStep"
-          type="button"
-          class="w-full sm:flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-lg hover:shadow-xl"
-        >
+
+        <button v-if="currentStep < steps.length - 1" @click="nextStep" type="button"
+          class="w-full sm:flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-lg hover:shadow-xl">
           <span class="flex items-center justify-center">
             Continue
             <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,17 +74,14 @@
           </span>
         </button>
 
-        <button
-          v-if="currentStep === steps.length - 1"
-          @click="submitForm"
-          :disabled="submitting"
-          type="button"
-          class="w-full sm:flex-1 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-semibold hover:from-green-700 hover:to-emerald-700 transition-all focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <button v-if="currentStep === steps.length - 1" @click="submitForm" :disabled="submitting" type="button"
+          class="w-full sm:flex-1 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-semibold hover:from-green-700 hover:to-emerald-700 transition-all focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
           <span class="flex items-center justify-center">
             <svg v-if="submitting" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+              </path>
             </svg>
             {{ submitting ? 'Submitting...' : 'Submit Application' }}
           </span>
@@ -215,7 +191,7 @@ const submitForm = async () => {
   submitting.value = true
   try {
     let bankStatements: any[] = []
-    
+
     if (formData.value.bankStatements && formData.value.bankStatements.length > 0) {
       try {
         const uploadResult = await uploadFiles(formData.value.bankStatements)
@@ -234,7 +210,7 @@ const submitForm = async () => {
         return
       }
     }
-    
+
     const responseData = {
       uniqueId: formData.value.uniqueId,
       isVerified: true,
@@ -248,7 +224,7 @@ const submitForm = async () => {
         phone: formData.value.phone
       }
     }
-    
+
     await submitResponse(responseData)
     clearSavedData()
     router.push('/thank-you')
@@ -280,4 +256,3 @@ const submitForm = async () => {
   opacity: 0;
 }
 </style>
-

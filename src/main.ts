@@ -10,6 +10,7 @@ import AdminLoginPage from './pages/AdminLoginPage.vue'
 import AdminOverviewPage from './pages/AdminOverviewPage.vue'
 import AdminApplicationsPage from './pages/AdminApplicationsPage.vue'
 import { useAuth } from './composables/useAuth'
+import LenderWelcome from './pages/LenderWelcome/LenderWelcome.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -31,7 +32,8 @@ const router = createRouter({
       component: AdminApplicationsPage,
       meta: { requiresAuth: true }
     },
-    { path: '/:uniqueId', component: FormPage }
+    { path: '/form/:uniqueId', component: FormPage },
+    { path: '/:uniqueId', component: LenderWelcome }
   ]
 })
 
