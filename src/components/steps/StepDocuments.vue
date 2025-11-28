@@ -17,7 +17,7 @@
           <div @click="triggerFileInput(index)" @dragover.prevent="handleDragOver(index)"
             @dragleave.prevent="handleDragLeave(index)" @drop.prevent="handleDrop(index, $event)" :class="[
               'border-2 border-dashed rounded-lg p-6 cursor-pointer transition-all',
-              statement.file ? 'border-green-500 bg-green-50' : 'border-gray-300 hover:border-blue-500 bg-gray-50',
+              statement.file ? 'border-green-500 bg-green-50' : hasError('bankStatements') && index === 0 ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-blue-500 bg-gray-50',
               isDragging[index] ? 'border-blue-500 bg-blue-50' : ''
             ]">
             <div class="flex flex-col items-center justify-center text-center">
@@ -49,6 +49,7 @@
           </div>
         </div>
       </div>
+      <p v-if="hasError('bankStatements')" class="mt-1 text-sm text-red-600">{{ getError('bankStatements') }}</p>
     </div>
 
     <!-- Info Box -->
@@ -69,6 +70,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { FormData } from '../../types'
+import { useFormValidation } from '../../composables/useFormValidation'
 
 const props = defineProps<{
   formData: Partial<FormData>
@@ -86,6 +88,7 @@ const bankStatements = ref([
 
 const isDragging = ref([false, false, false])
 const fileInputs = ref<HTMLInputElement[]>([])
+const { rules, hasError, getError, clearFieldError, errors } = useFormValidation()
 
 const triggerFileInput = (index: number) => {
   fileInputs.value[index]?.click()
@@ -98,6 +101,7 @@ const handleFileChange = (index: number, event: Event) => {
     if (validateFile(file)) {
       bankStatements.value[index].file = file
       updateFormData()
+      clearFieldError('bankStatements')
     }
   }
 }
@@ -117,6 +121,7 @@ const handleDrop = (index: number, event: DragEvent) => {
     if (validateFile(file)) {
       bankStatements.value[index].file = file
       updateFormData()
+      clearFieldError('bankStatements')
     }
   }
 }
@@ -155,4 +160,20 @@ const updateFormData = () => {
     .filter(f => f !== null) as File[]
   emit('update', { bankStatements: files })
 }
+
+const validateStep = (): boolean => {
+  clearFieldError('bankStatements')
+  const files = bankStatements.value
+    .map(s => s.file)
+    .filter(f => f !== null)
+
+  if (files.length === 0) {
+    errors.value['bankStatements'] = 'At least one bank statement is required'
+    return false
+  }
+
+  return true
+}
+
+defineExpose({ validateStep })
 </script>

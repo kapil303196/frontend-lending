@@ -48,8 +48,22 @@
 
     <!-- Form Content -->
     <div class="p-6 md:p-8">
+      <!-- Validation Error Alert -->
+      <div v-if="showValidationError"
+        class="mb-6 bg-red-50 border-2 border-red-200 rounded-lg p-4 flex items-start space-x-3">
+        <svg class="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div class="text-sm text-red-900">
+          <p class="font-semibold mb-1">Please fix the following errors:</p>
+          <p>All required fields must be filled out correctly before continuing.</p>
+        </div>
+      </div>
+
       <transition name="slide-fade" mode="out-in">
-        <component :is="currentStepComponent" :form-data="formData" :mca-data="mcaData" @update="updateFormData" />
+        <component :is="currentStepComponent" :form-data="formData" :mca-data="mcaData" @update="updateFormData"
+          :ref="el => currentStepRef = el" />
       </transition>
 
       <!-- Navigation Buttons -->
@@ -113,6 +127,8 @@ const { loadSavedData, saveData, clearSavedData } = useFormPersistence(props.mca
 
 const currentStep = ref(0)
 const submitting = ref(false)
+const showValidationError = ref(false)
+const currentStepRef = ref<any>(null)
 
 const steps = [
   { title: 'Business Info', component: StepBusinessInfo },
@@ -173,7 +189,30 @@ const updateFormData = (updates: Partial<FormData>) => {
   formData.value = { ...formData.value, ...updates }
 }
 
+const validateCurrentStep = (): boolean => {
+  // Review step doesn't need validation
+  if (currentStep.value === steps.length - 1) {
+    return true
+  }
+
+  // Call validateStep on the current step component
+  if (currentStepRef.value && typeof currentStepRef.value.validateStep === 'function') {
+    return currentStepRef.value.validateStep()
+  }
+
+  return true
+}
+
 const nextStep = () => {
+  showValidationError.value = false
+
+  // Validate current step before proceeding
+  if (!validateCurrentStep()) {
+    showValidationError.value = true
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    return
+  }
+
   if (currentStep.value < steps.length - 1) {
     currentStep.value++
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -181,6 +220,7 @@ const nextStep = () => {
 }
 
 const previousStep = () => {
+  showValidationError.value = false
   if (currentStep.value > 0) {
     currentStep.value--
     window.scrollTo({ top: 0, behavior: 'smooth' })

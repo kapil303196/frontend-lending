@@ -62,6 +62,39 @@ const loading = ref(true)
 const error = ref('')
 const mcaData = ref<MCAData | null>(null)
 
+const formatDateForInput = (dateInput: string | Date) => {
+  let date;
+
+  // Handle different input types
+  if (dateInput instanceof Date) {
+    date = dateInput;
+  } else if (typeof dateInput === 'string') {
+    // Check if it's in DD.MM.YYYY format
+    if (/^\d{2}\.\d{2}\.\d{4}$/.test(dateInput)) {
+      const [day, month, year] = dateInput.split('.');
+      date = new Date(Number(year), Number(month) - 1, Number(day));
+    } else {
+      // Try parsing as ISO string or other date string
+      date = new Date(dateInput);
+    }
+  } else {
+    throw new Error('Invalid date input');
+  }
+
+  // Validate date
+  if (isNaN(date.getTime())) {
+    throw new Error('Invalid date');
+  }
+
+  // Extract date components
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+
+  // Return in YYYY-MM-DD format (HTML date input format)
+  return `${year}-${month}-${day}`;
+}
+
 onMounted(async () => {
   if (!uniqueId) {
     error.value = 'You are on the wrong page. Please use the link provided in your email.'
@@ -70,7 +103,16 @@ onMounted(async () => {
   }
 
   try {
-    mcaData.value = await fetchMCAData(uniqueId)
+    const data = await fetchMCAData(uniqueId)
+    const formattedData = {
+      ...data,
+      data: {
+        ...data.data,
+        birthDate: formatDateForInput(data.data.birthDate),
+        dateBusinessStarted: formatDateForInput(data.data.dateBusinessStarted),
+      }
+    }
+    mcaData.value = formattedData
     loading.value = false
   } catch (err: any) {
     error.value = err?.message || 'Failed to load application data. Please check your link and try again.'

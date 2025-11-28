@@ -12,10 +12,12 @@
         </label>
         <div class="relative">
           <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">$</span>
-          <input v-model="localData.amountRequested" type="text" required
-            class="w-full pl-8 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
-            placeholder="50,000" @input="formatCurrency" />
+          <input v-model="localData.amountRequested" type="text" required :class="[
+            'w-full pl-8 pr-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
+            hasError('amountRequested') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+          ]" placeholder="50,000" @input="formatCurrency" @blur="validateSingleField('amountRequested')" />
         </div>
+        <p v-if="hasError('amountRequested')" class="mt-1 text-sm text-red-600">{{ getError('amountRequested') }}</p>
       </div>
 
       <div>
@@ -24,10 +26,12 @@
         </label>
         <div class="relative">
           <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">$</span>
-          <input v-model="localData.monthlyRevenue" type="text" required
-            class="w-full pl-8 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
-            placeholder="100,000" @input="formatRevenue" />
+          <input v-model="localData.monthlyRevenue" type="text" required :class="[
+            'w-full pl-8 pr-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
+            hasError('monthlyRevenue') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+          ]" placeholder="100,000" @input="formatRevenue" @blur="validateSingleField('monthlyRevenue')" />
         </div>
+        <p v-if="hasError('monthlyRevenue')" class="mt-1 text-sm text-red-600">{{ getError('monthlyRevenue') }}</p>
       </div>
 
       <div class="md:col-span-2">
@@ -37,24 +41,30 @@
         <div class="flex gap-4">
           <label class="flex items-center space-x-3 cursor-pointer group">
             <input v-model="localData.hasExistingBalances" type="radio" value="yes" required
-              class="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500" />
+              class="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500"
+              @change="validateSingleField('hasExistingBalances')" />
             <span class="text-gray-700 group-hover:text-gray-900 font-medium">Yes</span>
           </label>
           <label class="flex items-center space-x-3 cursor-pointer group">
             <input v-model="localData.hasExistingBalances" type="radio" value="no" required
-              class="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500" />
+              class="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500"
+              @change="validateSingleField('hasExistingBalances')" />
             <span class="text-gray-700 group-hover:text-gray-900 font-medium">No</span>
           </label>
         </div>
+        <p v-if="hasError('hasExistingBalances')" class="mt-1 text-sm text-red-600">{{ getError('hasExistingBalances')
+          }}</p>
       </div>
 
       <div class="md:col-span-2">
         <label class="block text-sm font-semibold text-gray-700 mb-2">
           How many owners are in the business? <span class="text-red-500">*</span>
         </label>
-        <input v-model.number="localData.numberOfOwners" type="number" min="1" required
-          class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
-          placeholder="1" />
+        <input v-model.number="localData.numberOfOwners" type="number" min="1" required :class="[
+          'w-full px-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
+          hasError('numberOfOwners') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+        ]" placeholder="1" @blur="validateSingleField('numberOfOwners')" />
+        <p v-if="hasError('numberOfOwners')" class="mt-1 text-sm text-red-600">{{ getError('numberOfOwners') }}</p>
       </div>
     </div>
 
@@ -75,6 +85,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import type { FormData } from '../../types'
+import { useFormValidation } from '../../composables/useFormValidation'
 
 const props = defineProps<{
   formData: Partial<FormData>
@@ -85,6 +96,37 @@ const emit = defineEmits<{
 }>()
 
 const localData = ref({ ...props.formData })
+const { rules, validateField, hasError, getError, clearFieldError, errors } = useFormValidation()
+
+// Define validation rules for this step
+const validationRules = {
+  amountRequested: [rules.required('Amount Requested'), rules.minValue(1000, 'Amount Requested')],
+  monthlyRevenue: [rules.required('Monthly Revenue'), rules.minValue(1000, 'Monthly Revenue')],
+  hasExistingBalances: [rules.required('Existing Balances')],
+  numberOfOwners: [rules.required('Number of Owners'), rules.minValue(1, 'Number of Owners')]
+}
+
+const validateSingleField = (fieldName: string) => {
+  clearFieldError(fieldName)
+  const fieldRules = validationRules[fieldName as keyof typeof validationRules]
+  if (fieldRules) {
+    const error = validateField(localData.value[fieldName as keyof typeof localData.value], fieldRules)
+    if (error) {
+      errors.value[fieldName] = error
+    }
+  }
+}
+
+const validateStep = (): boolean => {
+  let isValid = true
+  Object.keys(validationRules).forEach(fieldName => {
+    validateSingleField(fieldName)
+    if (hasError(fieldName)) {
+      isValid = false
+    }
+  })
+  return isValid
+}
 
 watch(localData, (newVal) => {
   emit('update', newVal)
@@ -97,6 +139,7 @@ const formatCurrency = (e: Event) => {
     value = parseInt(value).toLocaleString()
   }
   localData.value.amountRequested = value
+  clearFieldError('amountRequested')
 }
 
 const formatRevenue = (e: Event) => {
@@ -106,5 +149,8 @@ const formatRevenue = (e: Event) => {
     value = parseInt(value).toLocaleString()
   }
   localData.value.monthlyRevenue = value
+  clearFieldError('monthlyRevenue')
 }
+
+defineExpose({ validateStep })
 </script>

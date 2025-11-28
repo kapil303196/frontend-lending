@@ -10,36 +10,44 @@
         <label class="block text-sm font-semibold text-gray-700 mb-2">
           First Name <span class="text-red-500">*</span>
         </label>
-        <input v-model="localData.firstName" type="text" required
-          class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
-          placeholder="E.g. John" />
+        <input v-model="localData.firstName" type="text" required :class="[
+          'w-full px-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
+          hasError('firstName') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+        ]" placeholder="E.g. John" @blur="validateSingleField('firstName')" />
+        <p v-if="hasError('firstName')" class="mt-1 text-sm text-red-600">{{ getError('firstName') }}</p>
       </div>
 
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-2">
           Last Name <span class="text-red-500">*</span>
         </label>
-        <input v-model="localData.lastName" type="text" required
-          class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
-          placeholder="E.g. Doe" />
+        <input v-model="localData.lastName" type="text" required :class="[
+          'w-full px-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
+          hasError('lastName') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+        ]" placeholder="E.g. Doe" @blur="validateSingleField('lastName')" />
+        <p v-if="hasError('lastName')" class="mt-1 text-sm text-red-600">{{ getError('lastName') }}</p>
       </div>
 
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-2">
           Email Address <span class="text-red-500">*</span>
         </label>
-        <input v-model="localData.ownerEmail" type="email" required
-          class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
-          placeholder="E.g. john@doe.com" />
+        <input v-model="localData.ownerEmail" type="email" required :class="[
+          'w-full px-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
+          hasError('ownerEmail') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+        ]" placeholder="E.g. john@doe.com" @blur="validateSingleField('ownerEmail')" />
+        <p v-if="hasError('ownerEmail')" class="mt-1 text-sm text-red-600">{{ getError('ownerEmail') }}</p>
       </div>
 
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-2">
           Phone <span class="text-red-500">*</span>
         </label>
-        <input v-model="localData.phone" type="tel" required
-          class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
-          placeholder="E.g. +1 300 400 5000" @input="formatPhone" />
+        <input v-model="localData.phone" type="tel" required :class="[
+          'w-full px-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
+          hasError('phone') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+        ]" placeholder="E.g. +1 300 400 5000" @input="formatPhone" @blur="validateSingleField('phone')" />
+        <p v-if="hasError('phone')" class="mt-1 text-sm text-red-600">{{ getError('phone') }}</p>
         <p class="mt-1 text-xs text-gray-500">By submitting your phone number you accept to receive messages from Fund
           Direct</p>
       </div>
@@ -48,9 +56,11 @@
         <label class="block text-sm font-semibold text-gray-700 mb-2">
           Social Security Number <span class="text-red-500">*</span>
         </label>
-        <input v-model="localData.ssn" type="password" required maxlength="11"
-          class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
-          placeholder="XXX-XX-XXXX" @input="formatSSN" />
+        <input v-model="localData.ssn" type="password" required maxlength="11" :class="[
+          'w-full px-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
+          hasError('ssn') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+        ]" placeholder="XXX-XX-XXXX" @input="formatSSN" @blur="validateSingleField('ssn')" />
+        <p v-if="hasError('ssn')" class="mt-1 text-sm text-red-600">{{ getError('ssn') }}</p>
       </div>
 
       <div>
@@ -58,24 +68,30 @@
           % Ownership <span class="text-red-500">*</span>
         </label>
         <div class="relative">
-          <input v-model.number="localData.ownershipPercent" type="number" min="0" max="100" required
-            class="w-full px-4 py-3 pr-10 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
-            placeholder="100" />
+          <input v-model.number="localData.ownershipPercent" type="number" min="0" max="100" required :class="[
+            'w-full px-4 py-3 pr-10 border-2 rounded-lg focus:ring-2 transition-all outline-none',
+            hasError('ownershipPercent') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+          ]" placeholder="100" @blur="validateSingleField('ownershipPercent')" />
           <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">%</span>
         </div>
+        <p v-if="hasError('ownershipPercent')" class="mt-1 text-sm text-red-600">{{ getError('ownershipPercent') }}</p>
       </div>
 
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-2">
           Date of Birth <span class="text-red-500">*</span>
         </label>
-        <input v-model="localData.dateOfBirth" type="date" required
-          class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none" />
+        <input v-model="localData.dateOfBirth" type="date" required :class="[
+          'w-full px-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
+          hasError('dateOfBirth') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+        ]" @blur="validateSingleField('dateOfBirth')" />
+        <p v-if="hasError('dateOfBirth')" class="mt-1 text-sm text-red-600">{{ getError('dateOfBirth') }}</p>
       </div>
 
       <div class="md:col-span-2">
         <AddressAutocomplete v-model="localData.ownerStreetAddress" label="Street Address"
-          placeholder="Start typing your address..." :required="true" @addressSelected="handleOwnerAddressSelected" />
+          placeholder="Start typing your address..." :required="true" :error="getError('ownerStreetAddress')"
+          @addressSelected="handleOwnerAddressSelected" @blur="validateSingleField('ownerStreetAddress')" />
       </div>
 
       <div>
@@ -91,27 +107,35 @@
         <label class="block text-sm font-semibold text-gray-700 mb-2">
           State <span class="text-red-500">*</span>
         </label>
-        <input v-model="localData.ownerState" type="text" required
-          class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
-          placeholder="State" />
+        <input v-model="localData.ownerState" type="text" required maxlength="2" :class="[
+          'w-full px-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none uppercase',
+          hasError('ownerState') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+        ]" placeholder="CA" @input="localData.ownerState = (localData.ownerState || '').toUpperCase()"
+          @blur="validateSingleField('ownerState')" />
+        <p v-if="hasError('ownerState')" class="mt-1 text-sm text-red-600">{{ getError('ownerState') }}</p>
       </div>
 
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-2">
           ZIP <span class="text-red-500">*</span>
         </label>
-        <input v-model="localData.ownerZip" type="text" required maxlength="10"
-          class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
-          placeholder="12345" />
+        <input v-model="localData.ownerZip" type="text" required maxlength="10" :class="[
+          'w-full px-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
+          hasError('ownerZip') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+        ]" placeholder="12345" @blur="validateSingleField('ownerZip')" />
+        <p v-if="hasError('ownerZip')" class="mt-1 text-sm text-red-600">{{ getError('ownerZip') }}</p>
       </div>
 
       <div class="md:col-span-2">
         <label class="block text-sm font-semibold text-gray-700 mb-2">
           Did you work with a Fund Direct Specialist? If so, Who? <span class="text-red-500">*</span>
         </label>
-        <input v-model="localData.fundDirectSpecialist" type="text" required
-          class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
-          placeholder="Specialist name or 'None'" />
+        <input v-model="localData.fundDirectSpecialist" type="text" required :class="[
+          'w-full px-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
+          hasError('fundDirectSpecialist') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+        ]" placeholder="Specialist name or 'None'" @blur="validateSingleField('fundDirectSpecialist')" />
+        <p v-if="hasError('fundDirectSpecialist')" class="mt-1 text-sm text-red-600">{{ getError('fundDirectSpecialist')
+        }}</p>
       </div>
     </div>
 
@@ -133,6 +157,7 @@
 import { ref, watch } from 'vue'
 import type { FormData } from '../../types'
 import AddressAutocomplete from '../AddressAutocomplete.vue'
+import { useFormValidation } from '../../composables/useFormValidation'
 
 const props = defineProps<{
   formData: Partial<FormData>
@@ -143,6 +168,48 @@ const emit = defineEmits<{
 }>()
 
 const localData = ref({ ...props.formData })
+const { rules, validateField, hasError, getError, clearFieldError, errors } = useFormValidation()
+
+// Define validation rules for this step
+const validationRules = {
+  firstName: [rules.required('First Name')],
+  lastName: [rules.required('Last Name')],
+  ownerEmail: [rules.required('Email Address'), rules.email()],
+  phone: [rules.required('Phone'), rules.phone()],
+  ssn: [rules.required('SSN'), rules.ssn()],
+  ownershipPercent: [rules.required('Ownership Percentage'), rules.percentage()],
+  dateOfBirth: [rules.required('Date of Birth'), rules.minAge(18)],
+  ownerStreetAddress: [rules.required('Street Address')],
+  ownerState: [rules.required('State')],
+  ownerZip: [rules.required('ZIP Code'), rules.zipCode()],
+  fundDirectSpecialist: [rules.required('Fund Direct Specialist')]
+}
+
+const validateSingleField = (fieldName: string) => {
+  clearFieldError(fieldName)
+  const fieldRules = validationRules[fieldName as keyof typeof validationRules]
+  if (fieldRules) {
+    const fieldValue = localData.value[fieldName as keyof typeof localData.value]
+    console.log(`Validating ${fieldName}:`, fieldValue)
+    const error = validateField(fieldValue, fieldRules)
+    console.log(`Validation result for ${fieldName}:`, error)
+    if (error) {
+      errors.value[fieldName] = error
+      console.log(`Error set for ${fieldName}:`, errors.value[fieldName])
+    }
+  }
+}
+
+const validateStep = (): boolean => {
+  let isValid = true
+  Object.keys(validationRules).forEach(fieldName => {
+    validateSingleField(fieldName)
+    if (hasError(fieldName)) {
+      isValid = false
+    }
+  })
+  return isValid
+}
 
 watch(localData, (newVal) => {
   emit('update', newVal)
@@ -153,6 +220,9 @@ const handleOwnerAddressSelected = (addressData: any) => {
   localData.value.ownerCity = addressData.city
   localData.value.ownerState = addressData.stateShort
   localData.value.ownerZip = addressData.zipCode
+  clearFieldError('ownerStreetAddress')
+  clearFieldError('ownerState')
+  clearFieldError('ownerZip')
 }
 
 const formatPhone = (e: Event) => {
@@ -160,6 +230,7 @@ const formatPhone = (e: Event) => {
   let value = input.value.replace(/\D/g, '')
   if (value.length > 10) value = value.slice(0, 10)
   localData.value.phone = value
+  clearFieldError('phone')
 }
 
 const formatSSN = (e: Event) => {
@@ -172,5 +243,8 @@ const formatSSN = (e: Event) => {
     value = value.slice(0, 3) + '-' + value.slice(3)
   }
   localData.value.ssn = value
+  clearFieldError('ssn')
 }
+
+defineExpose({ validateStep })
 </script>
