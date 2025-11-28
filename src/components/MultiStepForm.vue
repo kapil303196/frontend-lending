@@ -1,11 +1,11 @@
 <template>
   <div class="w-full">
     <!-- Progress Steps -->
-    <div class="mb-8 bg-white rounded-xl shadow-sm p-6">
-      <div class="flex items-center justify-between mb-6">
+    <div class="mb-8 rounded-xl p-6">
+      <!-- <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold text-gray-900">Verify Your Information</h2>
         <span class="text-sm text-gray-500">Step {{ currentStep + 1 }} of {{ steps.length }}</span>
-      </div>
+      </div> -->
 
       <!-- Desktop Progress Bar -->
       <div class="hidden md:flex items-center justify-between">
@@ -28,7 +28,7 @@
               {{ step.title }}
             </span>
           </div>
-          <div v-if="index < steps.length - 1" class="flex-1 h-1 mx-2 rounded transition-all duration-300"
+          <div v-if="index < steps.length - 1" class="flex-1 h-1 mx-2 rounded transition-all duration-300 -mt-3"
             :class="index < currentStep ? 'bg-green-500' : 'bg-gray-200'" />
         </div>
       </div>
@@ -47,43 +47,43 @@
     </div>
 
     <!-- Form Content -->
-    <div class="bg-white rounded-xl shadow-sm p-6 md:p-8">
+    <div class="p-6 md:p-8">
       <transition name="slide-fade" mode="out-in">
         <component :is="currentStepComponent" :form-data="formData" :mca-data="mcaData" @update="updateFormData" />
       </transition>
 
       <!-- Navigation Buttons -->
-      <div class="flex flex-col sm:flex-row gap-4 mt-8 pt-6 border-t">
+      <div class="flex flex-row flex-wrap justify-center gap-4 mt-8 pt-6 border-t">
         <button v-if="currentStep > 0" @click="previousStep" type="button"
-          class="w-full sm:w-auto px-6 py-3 border-2 border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+          class="px-6 py-3 border-gray-300 bg-gray-200 rounded-full font-semibold text-black hover:bg-gray-200 transition-colors focus:outline-none">
           <span class="flex items-center justify-center">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
+            </svg> -->
             Previous
           </span>
         </button>
 
         <button v-if="currentStep < steps.length - 1" @click="nextStep" type="button"
-          class="w-full sm:flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-lg hover:shadow-xl">
+          class="px-6 py-3 bg-white rounded-full text-black font-semibold hover:bg-white transition-all focus:outline-none">
           <span class="flex items-center justify-center">
             Continue
-            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
+            </svg> -->
           </span>
         </button>
 
         <button v-if="currentStep === steps.length - 1" @click="submitForm" :disabled="submitting" type="button"
-          class="w-full sm:flex-1 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-semibold hover:from-green-700 hover:to-emerald-700 transition-all focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
+          class="px-6 py-3 bg-white text-black rounded-full font-semibold hover:bg-white transition-all focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">
           <span class="flex items-center justify-center">
-            <svg v-if="submitting" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+            <svg v-if="submitting" class="animate-spin -ml-1 mr-3 h-5 w-5 text-black" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor"
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
               </path>
             </svg>
-            {{ submitting ? 'Submitting...' : 'Submit Application' }}
+            {{ submitting ? 'Submitting...' : 'Submit' }}
           </span>
         </button>
       </div>

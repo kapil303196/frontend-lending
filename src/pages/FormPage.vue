@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+  <div class="min-h-screen bg-gray-100">
     <!-- Header -->
     <!-- <LogoHeader /> -->
     <header class="bg-white shadow-sm sticky top-0 z-50">

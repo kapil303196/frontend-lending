@@ -5,18 +5,20 @@ import './style.css'
 
 import HomePage from './pages/HomePage.vue'
 import FormPage from './pages/FormPage.vue'
-import ThankYouPage from './pages/ThankYouPage.vue'
+// import ThankYouPage from './pages/ThankYouPage.vue'
 import AdminLoginPage from './pages/AdminLoginPage.vue'
 import AdminOverviewPage from './pages/AdminOverviewPage.vue'
 import AdminApplicationsPage from './pages/AdminApplicationsPage.vue'
 import { useAuth } from './composables/useAuth'
 import LenderWelcome from './pages/LenderWelcome/LenderWelcome.vue'
+import ThankYouNew from './pages/ThankYouNew/ThankYouNew.vue'
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', component: HomePage },
-    { path: '/thank-you', component: ThankYouPage },
+    // { path: '/thank-you', component: ThankYouPage },
+    { path: '/thank-you', component: ThankYouNew },
     { 
       path: '/admin/login', 
       component: AdminLoginPage,
