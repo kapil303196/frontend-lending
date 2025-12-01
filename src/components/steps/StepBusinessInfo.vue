@@ -53,12 +53,8 @@
         <label class="block text-sm font-semibold text-gray-700 mb-2">
           Business Start Date <span class="text-red-500">*</span>
         </label>
-        <input v-model="localData.businessStartDate" type="date" required :class="[
-          'w-full px-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
-          hasError('businessStartDate') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
-        ]" @blur="validateSingleField('businessStartDate')" />
-        <p v-if="hasError('businessStartDate')" class="mt-1 text-sm text-red-600">{{ getError('businessStartDate') }}
-        </p>
+        <BaseDatePicker v-model="localData.businessStartDate" :error="getError('businessStartDate')"
+          @blur="validateSingleField('businessStartDate')" />
       </div>
 
       <div class="md:col-span-2">
@@ -106,6 +102,7 @@
 import { ref, watch } from 'vue'
 import type { FormData } from '../../types'
 import AddressAutocomplete from '../AddressAutocomplete.vue'
+import BaseDatePicker from '../BaseDatePicker.vue'
 import { useFormValidation } from '../../composables/useFormValidation'
 
 const props = defineProps<{

@@ -56,6 +56,34 @@
           }}</p>
       </div>
 
+      <!-- Conditional Fields for Existing Balances -->
+      <div v-if="localData.hasExistingBalances === 'yes'" class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            Lender Name <span class="text-red-500">*</span>
+          </label>
+          <input v-model="localData.existingLender" type="text" required :class="[
+            'w-full px-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
+            hasError('existingLender') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+          ]" placeholder="E.g. ABC Capital" @blur="validateSingleField('existingLender')" />
+          <p v-if="hasError('existingLender')" class="mt-1 text-sm text-red-600">{{ getError('existingLender') }}</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            Balance Remaining <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">$</span>
+            <input v-model="localData.existingBalance" type="text" required :class="[
+              'w-full pl-8 pr-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
+              hasError('existingBalance') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+            ]" placeholder="10,000" @input="formatBalance" @blur="validateSingleField('existingBalance')" />
+          </div>
+          <p v-if="hasError('existingBalance')" class="mt-1 text-sm text-red-600">{{ getError('existingBalance') }}</p>
+        </div>
+      </div>
+
       <div class="md:col-span-2">
         <label class="block text-sm font-semibold text-gray-700 mb-2">
           How many owners are in the business? <span class="text-red-500">*</span>
@@ -103,11 +131,19 @@ const validationRules = {
   amountRequested: [rules.required('Amount Requested'), rules.minValue(1000, 'Amount Requested')],
   monthlyRevenue: [rules.required('Monthly Revenue'), rules.minValue(1000, 'Monthly Revenue')],
   hasExistingBalances: [rules.required('Existing Balances')],
-  numberOfOwners: [rules.required('Number of Owners'), rules.minValue(1, 'Number of Owners')]
+  numberOfOwners: [rules.required('Number of Owners'), rules.minValue(1, 'Number of Owners')],
+  existingLender: [rules.required('Lender Name')],
+  existingBalance: [rules.required('Balance Remaining')]
 }
 
 const validateSingleField = (fieldName: string) => {
   clearFieldError(fieldName)
+
+  // Skip validation for conditional fields if not applicable
+  if ((fieldName === 'existingLender' || fieldName === 'existingBalance') && localData.value.hasExistingBalances !== 'yes') {
+    return
+  }
+
   const fieldRules = validationRules[fieldName as keyof typeof validationRules]
   if (fieldRules) {
     const error = validateField(localData.value[fieldName as keyof typeof localData.value], fieldRules)
@@ -129,6 +165,13 @@ const validateStep = (): boolean => {
 }
 
 watch(localData, (newVal) => {
+  // Clear conditional fields if user switches back to "No"
+  if (newVal.hasExistingBalances === 'no') {
+    newVal.existingLender = ''
+    newVal.existingBalance = ''
+    clearFieldError('existingLender')
+    clearFieldError('existingBalance')
+  }
   emit('update', newVal)
 }, { deep: true })
 
@@ -150,6 +193,16 @@ const formatRevenue = (e: Event) => {
   }
   localData.value.monthlyRevenue = value
   clearFieldError('monthlyRevenue')
+}
+
+const formatBalance = (e: Event) => {
+  const input = e.target as HTMLInputElement
+  let value = input.value.replace(/[^0-9]/g, '')
+  if (value) {
+    value = parseInt(value).toLocaleString()
+  }
+  localData.value.existingBalance = value
+  clearFieldError('existingBalance')
 }
 
 defineExpose({ validateStep })

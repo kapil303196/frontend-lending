@@ -11,8 +11,8 @@
       <div class="hidden md:flex items-center justify-between">
         <div v-for="(step, index) in steps" :key="index" class="flex-1 flex items-center">
           <div class="flex flex-col items-center flex-1">
-            <div
-              class="w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all duration-300"
+            <div @click="goToStep(index)"
+              class="w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all duration-300 cursor-pointer hover:scale-110"
               :class="[
                 index < currentStep ? 'bg-green-500 text-white' : '',
                 index === currentStep ? 'bg-blue-600 text-white ring-4 ring-blue-100' : '',
@@ -159,6 +159,8 @@ const formData = ref<Partial<FormData>>(savedData?.formData || {
   dba: '',
   amountRequested: '',
   hasExistingBalances: '',
+  existingLender: '',
+  existingBalance: '',
   numberOfOwners: '1',
   ssn: '',
   ownershipPercent: '',
@@ -226,6 +228,34 @@ const previousStep = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 }
+
+const goToStep = (targetStep: number) => {
+  // Don't do anything if clicking on the current step
+  if (targetStep === currentStep.value) {
+    return
+  }
+
+  showValidationError.value = false
+
+  // If going backward, allow without validation
+  if (targetStep < currentStep.value) {
+    currentStep.value = targetStep
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    return
+  }
+
+  // If going forward, validate current step first
+  if (!validateCurrentStep()) {
+    showValidationError.value = true
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    return
+  }
+
+  // Move to the target step
+  currentStep.value = targetStep
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
 
 const submitForm = async () => {
   submitting.value = true

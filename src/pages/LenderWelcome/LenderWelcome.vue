@@ -12,8 +12,7 @@
                 <p class="text-xl mb-2">hello,</p>
                 <h1 class="text-4xl md:text-5xl font-bold mb-4">{{ mcaData?.data?.company }}</h1>
                 <p class="text-lg font-light mb-8 max-w-md">
-                    Welcome to your gateway to stable global finance. Effortlessly manage USD flows, settle payments
-                    worldwide, and unlock credit on a secure, integrated platform.
+                    Please verify business information and fill in the remaining fields
                 </p>
 
                 <button @click="startForm"

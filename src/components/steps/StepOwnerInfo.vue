@@ -81,11 +81,8 @@
         <label class="block text-sm font-semibold text-gray-700 mb-2">
           Date of Birth <span class="text-red-500">*</span>
         </label>
-        <input v-model="localData.dateOfBirth" type="date" required :class="[
-          'w-full px-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
-          hasError('dateOfBirth') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
-        ]" @blur="validateSingleField('dateOfBirth')" />
-        <p v-if="hasError('dateOfBirth')" class="mt-1 text-sm text-red-600">{{ getError('dateOfBirth') }}</p>
+        <BaseDatePicker v-model="localData.dateOfBirth" :error="getError('dateOfBirth')"
+          @blur="validateSingleField('dateOfBirth')" />
       </div>
 
       <div class="md:col-span-2">
@@ -135,7 +132,7 @@
           hasError('fundDirectSpecialist') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
         ]" placeholder="Specialist name or 'None'" @blur="validateSingleField('fundDirectSpecialist')" />
         <p v-if="hasError('fundDirectSpecialist')" class="mt-1 text-sm text-red-600">{{ getError('fundDirectSpecialist')
-        }}</p>
+          }}</p>
       </div>
     </div>
 
@@ -157,6 +154,7 @@
 import { ref, watch } from 'vue'
 import type { FormData } from '../../types'
 import AddressAutocomplete from '../AddressAutocomplete.vue'
+import BaseDatePicker from '../BaseDatePicker.vue'
 import { useFormValidation } from '../../composables/useFormValidation'
 
 const props = defineProps<{
