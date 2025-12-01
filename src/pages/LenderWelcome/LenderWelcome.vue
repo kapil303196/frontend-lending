@@ -9,7 +9,7 @@
 
             <!-- Center Content -->
             <div class="flex-grow flex flex-col items-center justify-center text-center text-white px-4">
-                <p class="text-xl mb-2">hello,</p>
+                <p class="text-xl mb-2">Hello,</p>
                 <h1 class="text-4xl md:text-5xl font-bold mb-4">{{ mcaData?.data?.company }}</h1>
                 <p class="text-lg font-light mb-8 max-w-md">
                     Please verify business information and fill in the remaining fields
