@@ -1,6 +1,7 @@
 <template>
-    <div class="min-h-screen flex flex-col relative bg-cover bg-center"
-        :style="{ backgroundImage: `url('/assets/images/thankyou-page.png')` }">
+    <div class="min-h-screen flex flex-col relative">
+        <img src="/assets/images/thankyou-page.jpg" alt="Thank You Background"
+            class="absolute inset-0 w-full h-full object-cover" fetchpriority="high" />
         <!-- Overlay for better text readability if needed, currently just the image -->
         <div class="absolute inset-0 bg-black/30"></div>
 
