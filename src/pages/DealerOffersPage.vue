@@ -158,17 +158,14 @@
             <div
               v-for="item in offers"
               :key="item.response._id"
-              class="bg-white border border-gray-200 rounded-lg px-3 sm:px-4 py-4 sm:py-5 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all flex flex-col gap-3"
+              @click="openDetails(item.response)"
+              class="bg-white border border-gray-200 rounded-lg px-3 sm:px-4 py-4 sm:py-5 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all flex flex-col gap-3 cursor-pointer group"
             >
               <!-- Top row: basic info + quick actions -->
               <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <div class="flex-1 min-w-0">
-                  <button
-                    type="button"
-                    class="text-left w-full"
-                    @click="openDetails(item.response)"
-                  >
-                      <p class="text-base font-semibold text-gray-900 truncate">
+                  <div class="text-left w-full">
+                      <p class="text-base font-semibold text-gray-900 truncate group-hover:text-emerald-700 transition-colors">
                       {{ getBusinessName(item.response) }}
                     </p>
                       <p class="text-sm text-gray-500 font-mono">
@@ -179,12 +176,19 @@
                       <span class="hidden sm:inline text-gray-300">•</span>
                       <span class="hidden sm:inline truncate" v-if="getEmail(item.response)">{{ getEmail(item.response) }}</span>
                     </p>
-                  </button>
+                  </div>
                 </div>
                 <div class="flex items-center gap-3 mt-1 sm:mt-0">
                   <p class="text-sm text-gray-500 whitespace-nowrap">
                     Created: {{ formatDate(item.response.createdAt) }}
                   </p>
+                  <div class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg transition-all shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    <span>View Details</span>
+                  </div>
                 </div>
               </div>
 
@@ -240,7 +244,7 @@
               </div>
 
               <!-- Bottom row: controls + notes -->
-              <div class="mt-1 flex flex-col md:flex-row md:items-start md:gap-4">
+              <div class="mt-1 flex flex-col md:flex-row md:items-start md:gap-4" @click.stop>
                 <!-- Left: controls -->
                 <div class="md:w-1/2 space-y-2">
                   <div>
@@ -249,6 +253,7 @@
                       <select
                         v-model="item.localInternalStatus"
                         @change="handleStatusChange(item)"
+                        @click.stop
                         :disabled="item.isSaving"
                         class="w-full px-3 py-2.5 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all bg-white appearance-none cursor-pointer font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                         :class="item.localInternalStatus ? getStatusBadgeClass(item.localInternalStatus) : 'text-gray-700'"
@@ -284,6 +289,7 @@
                     <textarea
                       v-model="item.newNote"
                       @keydown.ctrl.enter="saveDealerMeta(item)"
+                      @click.stop
                       rows="2"
                       class="w-full px-3 py-2 text-base border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
                       placeholder="Add internal note..."
@@ -291,7 +297,7 @@
                   </div>
                   <div class="flex items-center justify-between gap-3">
                     <button
-                      @click="saveDealerMeta(item)"
+                      @click.stop="saveDealerMeta(item)"
                       :disabled="item.isSaving || !item.newNote?.trim()"
                       class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -319,23 +325,13 @@
                       <span>{{ item.isSaving ? 'Saving...' : 'Save Changes' }}</span>
                     </button>
                     <div class="flex items-center gap-2">
-                      <span v-if="item.saveMessage" class="text-sm text-emerald-600">{{ item.saveMessage }}</span>
-                      <button
-                        type="button"
-                        @click="openDetails(item.response)"
-                        class="text-xs text-emerald-600 hover:text-emerald-700 inline-flex items-center gap-1"
-                      >
-                        <span>View details</span>
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
+                      <span v-if="item.saveMessage" class="text-sm text-emerald-600 font-medium">{{ item.saveMessage }}</span>
                     </div>
                   </div>
                 </div>
 
                 <!-- Right: brief notes summary + modal trigger -->
-                <div class="mt-3 md:mt-0 md:flex-1" v-if="item.dealerMeta?.notes?.length">
+                <div class="mt-3 md:mt-0 md:flex-1" v-if="item.dealerMeta?.notes?.length" @click.stop>
                   <p class="text-sm font-semibold text-gray-700 mb-1.5">
                     Notes ({{ item.dealerMeta.notes.length }})
                   </p>
@@ -353,7 +349,7 @@
                     <button
                       type="button"
                       class="mt-2 text-xs font-medium text-emerald-600 hover:text-emerald-700 inline-flex items-center gap-1"
-                      @click="openNotesModal(item)"
+                      @click.stop="openNotesModal(item)"
                     >
                       <span>View all notes</span>
                       <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
