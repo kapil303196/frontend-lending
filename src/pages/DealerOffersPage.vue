@@ -248,7 +248,9 @@
                     <div class="relative">
                       <select
                         v-model="item.localInternalStatus"
-                        class="w-full px-3 py-2.5 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all bg-white appearance-none cursor-pointer font-medium"
+                        @change="handleStatusChange(item)"
+                        :disabled="item.isSaving"
+                        class="w-full px-3 py-2.5 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all bg-white appearance-none cursor-pointer font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                         :class="item.localInternalStatus ? getStatusBadgeClass(item.localInternalStatus) : 'text-gray-700'"
                       >
                         <option value="">Not set</option>
@@ -265,8 +267,13 @@
                       </div>
                     </div>
                     <div v-if="item.localInternalStatus" class="mt-2 inline-flex items-center gap-2 px-2 py-1 rounded text-xs" :class="getStatusBadgeClass(item.localInternalStatus)">
+                      <svg v-if="item.isSaving" class="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
                       <span class="capitalize font-medium">{{ item.localInternalStatus.replace('_', ' ') }}</span>
-                      <span class="text-xs opacity-75">(preview)</span>
+                      <span v-if="item.isSaving" class="text-xs opacity-75">(saving...)</span>
+                      <span v-else-if="item.saveMessage" class="text-xs opacity-75">(saved)</span>
                     </div>
                   </div>
                   <div>
@@ -285,7 +292,7 @@
                   <div class="flex items-center justify-between gap-3">
                     <button
                       @click="saveDealerMeta(item)"
-                      :disabled="item.isSaving || (!item.localInternalStatus && !item.newNote?.trim())"
+                      :disabled="item.isSaving || !item.newNote?.trim()"
                       class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <svg
@@ -522,6 +529,7 @@ const loadOffers = async (page?: number) => {
     offers.value = data.map((item: any) => ({
       ...item,
       localInternalStatus: item.dealerMeta?.internalStatus || '',
+      originalInternalStatus: item.dealerMeta?.internalStatus || '', // Track original to detect changes
       newNote: '',
       isSaving: false,
       saveMessage: ''
@@ -583,7 +591,14 @@ const getPageNumbers = () => {
   return rangeWithDots.filter((v, i, a) => a.indexOf(v) === i);
 };
 
-const saveDealerMeta = async (item: any) => {
+const handleStatusChange = async (item: any) => {
+  // Only auto-save if status actually changed
+  if (item.localInternalStatus !== item.originalInternalStatus) {
+    await saveDealerMeta(item, true); // true = status-only save
+  }
+};
+
+const saveDealerMeta = async (item: any, statusOnly: boolean = false) => {
   try {
     item.isSaving = true;
     item.saveMessage = '';
@@ -592,7 +607,7 @@ const saveDealerMeta = async (item: any) => {
     if (item.localInternalStatus) {
       payload.internalStatus = item.localInternalStatus;
     }
-    if (item.newNote?.trim()) {
+    if (!statusOnly && item.newNote?.trim()) {
       payload.note = item.newNote.trim();
     }
 
@@ -628,10 +643,12 @@ const saveDealerMeta = async (item: any) => {
       
       // Update local status to match
       item.localInternalStatus = updatedDealerOffer.internalStatus || '';
+      // Update original status to track future changes
+      item.originalInternalStatus = updatedDealerOffer.internalStatus || '';
     }
 
-    item.saveMessage = 'Saved';
-    // Clear note input after successful save
+    item.saveMessage = statusOnly ? 'Status saved' : 'Saved';
+    // Clear note input after successful save (only if note was saved)
     if (payload.note) {
       item.newNote = '';
     }
