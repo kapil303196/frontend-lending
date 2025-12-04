@@ -28,31 +28,31 @@
             <!-- Status -->
             <div class="mb-6">
               <label class="block text-sm font-medium text-gray-700 mb-2">Status Management</label>
-              <div class="flex items-center gap-4">
-                <span :class="statusColorClass" class="inline-flex px-4 py-2 rounded-lg text-sm font-medium">
-                  {{ response.status }}
+              <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+                <span :class="statusColorClass" class="inline-flex px-4 py-2.5 sm:px-4 sm:py-2 rounded-lg text-base sm:text-sm font-bold sm:font-semibold shadow-md sm:shadow-sm border-2 sm:border-0 whitespace-nowrap">
+                  {{ formatStatusLabel(response.status) }}
                 </span>
 
                 <!-- Status Update Buttons -->
-                <div v-if="adminConfig.features.allowStatusUpdate" class="flex items-center gap-2">
+                <div v-if="adminConfig.features.allowStatusUpdate" class="flex flex-wrap items-center gap-2">
                   <button v-if="response.status !== 'pending'" @click="updateStatus('pending')"
                     :disabled="isUpdatingStatus"
-                    class="px-3 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 hover:bg-yellow-200 rounded-lg transition-colors disabled:opacity-50">
+                    class="px-3 py-1.5 sm:py-1 text-xs font-medium text-yellow-700 bg-yellow-100 hover:bg-yellow-200 rounded-lg transition-colors disabled:opacity-50">
                     Set Pending
                   </button>
                   <button v-if="response.status !== 'submitted'" @click="updateStatus('submitted')"
                     :disabled="isUpdatingStatus"
-                    class="px-3 py-1 text-xs font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-lg transition-colors disabled:opacity-50">
+                    class="px-3 py-1.5 sm:py-1 text-xs font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-lg transition-colors disabled:opacity-50">
                     Set Submitted
                   </button>
                   <button v-if="response.status !== 'approved'" @click="updateStatus('approved')"
                     :disabled="isUpdatingStatus"
-                    class="px-3 py-1 text-xs font-medium text-green-700 bg-green-100 hover:bg-green-200 rounded-lg transition-colors disabled:opacity-50">
+                    class="px-3 py-1.5 sm:py-1 text-xs font-medium text-green-700 bg-green-100 hover:bg-green-200 rounded-lg transition-colors disabled:opacity-50">
                     Approve
                   </button>
                   <button v-if="response.status !== 'rejected'" @click="updateStatus('rejected')"
                     :disabled="isUpdatingStatus"
-                    class="px-3 py-1 text-xs font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-lg transition-colors disabled:opacity-50">
+                    class="px-3 py-1.5 sm:py-1 text-xs font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-lg transition-colors disabled:opacity-50">
                     Reject
                   </button>
                 </div>
@@ -299,14 +299,14 @@ const statusColorClass = computed(() => {
   const status = props.response.status;
   switch (status) {
     case 'submitted':
-      return 'bg-blue-100 text-blue-800';
+      return 'bg-blue-100 text-blue-800 border-blue-400';
     case 'approved':
-      return 'bg-green-100 text-green-800';
+      return 'bg-green-100 text-green-800 border-green-400';
     case 'rejected':
-      return 'bg-red-100 text-red-800';
+      return 'bg-red-100 text-red-800 border-red-400';
     case 'pending':
     default:
-      return 'bg-yellow-100 text-yellow-800';
+      return 'bg-yellow-100 text-yellow-800 border-yellow-400';
   }
 });
 
@@ -346,6 +346,11 @@ const updateStatus = async (newStatus: string) => {
   } finally {
     isUpdatingStatus.value = false;
   }
+};
+
+const formatStatusLabel = (status: string) => {
+  if (!status) return '';
+  return status.charAt(0).toUpperCase() + status.slice(1);
 };
 
 const formatDate = (date: string) => {
