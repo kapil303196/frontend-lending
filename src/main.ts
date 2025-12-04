@@ -9,7 +9,10 @@ import FormPage from './pages/FormPage.vue'
 import AdminLoginPage from './pages/AdminLoginPage.vue'
 import AdminOverviewPage from './pages/AdminOverviewPage.vue'
 import AdminApplicationsPage from './pages/AdminApplicationsPage.vue'
+import DealerLoginPage from './pages/DealerLoginPage.vue'
+import DealerOffersPage from './pages/DealerOffersPage.vue'
 import { useAuth } from './composables/useAuth'
+import { useDealerAuth } from './composables/useDealerAuth'
 import LenderWelcome from './pages/LenderWelcome/LenderWelcome.vue'
 import ThankYouNew from './pages/ThankYouNew/ThankYouNew.vue'
 
@@ -24,6 +27,11 @@ const router = createRouter({
       component: AdminLoginPage,
       meta: { requiresGuest: true }
     },
+    {
+      path: '/dealer/login',
+      component: DealerLoginPage,
+      meta: { requiresDealerGuest: true }
+    },
     { 
       path: '/admin/dashboard', 
       component: AdminOverviewPage,
@@ -34,6 +42,11 @@ const router = createRouter({
       component: AdminApplicationsPage,
       meta: { requiresAuth: true }
     },
+    {
+      path: '/dealer/offers',
+      component: DealerOffersPage,
+      meta: { requiresDealerAuth: true }
+    },
     { path: '/form/:uniqueId', component: FormPage },
     { path: '/:uniqueId', component: LenderWelcome }
   ]
@@ -42,6 +55,7 @@ const router = createRouter({
 // Navigation guard
 router.beforeEach(async (to, from, next) => {
   const { isAuthenticated, verifyToken } = useAuth()
+  const { isAuthenticated: isDealerAuthenticated, verifyToken: verifyDealerToken } = useDealerAuth()
 
   if (to.meta.requiresAuth) {
     // Check if user is authenticated
@@ -58,8 +72,26 @@ router.beforeEach(async (to, from, next) => {
     }
   }
 
+  if (to.meta.requiresDealerAuth) {
+    if (!isDealerAuthenticated.value) {
+      next('/dealer/login')
+      return
+    }
+
+    const isValidDealer = await verifyDealerToken()
+    if (!isValidDealer) {
+      next('/dealer/login')
+      return
+    }
+  }
+
   if (to.meta.requiresGuest && isAuthenticated.value) {
     next('/admin/dashboard')
+    return
+  }
+
+  if (to.meta.requiresDealerGuest && isDealerAuthenticated.value) {
+    next('/dealer/offers')
     return
   }
 
