@@ -1,15 +1,15 @@
 <template>
   <Transition name="modal">
-    <div v-if="isOpen" class="fixed inset-0 z-50 overflow-y-auto" @click.self="close">
+    <div v-if="isOpen" class="fixed inset-0 z-50" @click.self="close">
       <!-- Backdrop -->
       <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"></div>
 
       <!-- Modal -->
-      <div class="flex min-h-full items-center justify-center p-4">
-        <div class="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full overflow-hidden" style="max-height: 90vh;"
+      <div class="fixed inset-0 flex items-center justify-center p-0 md:p-4 pointer-events-none">
+        <div class="relative bg-white rounded-none md:rounded-2xl shadow-2xl max-w-4xl w-full h-full md:h-auto md:max-h-[90vh] flex flex-col overflow-y-auto pointer-events-auto"
           @click.stop>
           <!-- Header -->
-          <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
+          <div class="sticky top-0 bg-white border-b border-gray-200 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between z-10 flex-shrink-0 shadow-sm">
             <div>
               <h2 class="text-2xl font-bold text-gray-900">
                 {{ response.formData?.businessInfo?.businessName || 'Application Details' }}
@@ -24,7 +24,7 @@
           </div>
 
           <!-- Content -->
-          <div class="px-6 py-6 overflow-y-auto" style="max-height: calc(90vh - 180px);">
+          <div class="px-4 md:px-6 py-4 md:py-6 flex-1">
             <!-- Status -->
             <div class="mb-6">
               <label class="block text-sm font-medium text-gray-700 mb-2">Status Management</label>
@@ -217,7 +217,7 @@
           </div>
 
           <!-- Footer -->
-          <div class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4 flex justify-end">
+          <div class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 md:px-6 py-3 md:py-4 flex justify-end flex-shrink-0 z-10">
             <button @click="close"
               class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors">
               Close

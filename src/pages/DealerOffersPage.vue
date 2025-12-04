@@ -440,10 +440,10 @@
     />
 
     <!-- Notes history modal -->
-    <div v-if="isNotesModalOpen" class="fixed inset-0 z-50 flex items-center justify-center px-4">
+    <div v-if="isNotesModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-0 md:px-4">
       <div class="absolute inset-0 bg-black bg-opacity-40" @click="closeNotesModal"></div>
-      <div class="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[80vh] flex flex-col overflow-hidden">
-        <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+      <div class="relative bg-white rounded-none md:rounded-2xl shadow-2xl max-w-lg w-full h-full md:h-auto md:max-h-[80vh] flex flex-col overflow-hidden">
+        <div class="sticky top-0 bg-white border-b border-gray-200 px-4 md:px-5 py-3 md:py-4 flex items-center justify-between z-10">
           <div>
             <h3 class="text-base sm:text-lg font-semibold text-gray-900">
               Notes for {{ notesModalItemBusinessName }}
@@ -462,7 +462,7 @@
             </svg>
           </button>
         </div>
-        <div class="px-5 py-4 overflow-y-auto space-y-3">
+        <div class="px-4 md:px-5 py-3 md:py-4 overflow-y-auto space-y-3 flex-1">
           <div
             v-for="note in notesModalNotes"
             :key="note._id || note.createdAt"
@@ -482,7 +482,7 @@
             No notes available.
           </p>
         </div>
-        <div class="px-5 py-3 border-t border-gray-200 flex justify-end">
+        <div class="px-4 md:px-5 py-3 border-t border-gray-200 flex justify-end">
           <button
             type="button"
             class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100"
@@ -495,10 +495,10 @@
     </div>
 
     <!-- Status Timeline Modal -->
-    <div v-if="isStatusTimelineOpen" class="fixed inset-0 z-50 flex items-center justify-center px-4">
+    <div v-if="isStatusTimelineOpen" class="fixed inset-0 z-50 flex items-center justify-center p-0 md:px-4">
       <div class="absolute inset-0 bg-black bg-opacity-40" @click="closeStatusTimeline"></div>
-      <div class="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] flex flex-col overflow-hidden">
-        <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+      <div class="relative bg-white rounded-none md:rounded-2xl shadow-2xl max-w-2xl w-full h-full md:h-auto md:max-h-[80vh] flex flex-col overflow-hidden">
+        <div class="sticky top-0 bg-white border-b border-gray-200 px-4 md:px-5 py-3 md:py-4 flex items-center justify-between z-10">
           <div>
             <h3 class="text-base sm:text-lg font-semibold text-gray-900">
               Status Change Timeline
@@ -517,7 +517,7 @@
             </svg>
           </button>
         </div>
-        <div class="px-5 py-4 overflow-y-auto">
+        <div class="px-4 md:px-5 py-3 md:py-4 overflow-y-auto flex-1">
           <div v-if="statusTimelineHistory && statusTimelineHistory.length > 0" class="relative">
             <!-- Timeline line -->
             <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
@@ -547,7 +547,7 @@
             No status changes recorded yet.
           </p>
         </div>
-        <div class="px-5 py-3 border-t border-gray-200 flex justify-end">
+        <div class="px-4 md:px-5 py-3 border-t border-gray-200 flex justify-end">
           <button
             type="button"
             class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100"

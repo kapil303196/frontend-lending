@@ -5,14 +5,13 @@
       <div class="fixed inset-0 bg-black bg-opacity-75 transition-opacity"></div>
 
       <!-- Modal -->
-      <div class="flex min-h-full items-center justify-center p-4">
+      <div class="flex min-h-full items-center justify-center p-0 md:p-4">
         <div 
-          class="relative bg-white rounded-2xl shadow-2xl w-full overflow-hidden"
-          style="max-width: 90vw; max-height: 90vh;"
+          class="relative bg-white rounded-none md:rounded-2xl shadow-2xl w-full h-full md:h-auto overflow-hidden md:max-w-[90vw] md:max-h-[90vh] flex flex-col"
           @click.stop
         >
           <!-- Header -->
-          <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
+          <div class="sticky top-0 bg-white border-b border-gray-200 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between z-10">
             <div class="flex items-center gap-3">
               <component :is="fileIcon" class="w-8 h-8" :class="fileIconColor" />
               <div>
@@ -44,22 +43,21 @@
           </div>
 
           <!-- Content -->
-          <div class="overflow-auto" style="max-height: calc(90vh - 80px);">
+          <div class="overflow-auto h-full md:max-h-[calc(90vh-80px)]">
             <!-- PDF Viewer -->
             <iframe
               v-if="fileType === 'pdf'"
               :src="file.url"
-              class="w-full"
-              style="height: calc(90vh - 80px);"
+              class="w-full h-full md:h-[calc(90vh-80px)]"
             ></iframe>
 
             <!-- Image Viewer -->
-            <div v-else-if="fileType === 'image'" class="flex items-center justify-center p-8 bg-gray-50">
+            <div v-else-if="fileType === 'image'" class="flex items-center justify-center p-4 md:p-8 bg-gray-50 min-h-full">
               <img :src="file.url" :alt="file.originalName" class="max-w-full h-auto" />
             </div>
 
             <!-- Unsupported File Type -->
-            <div v-else class="flex flex-col items-center justify-center p-12 text-center">
+            <div v-else class="flex flex-col items-center justify-center p-6 md:p-12 text-center min-h-full">
               <component :is="fileIcon" class="w-24 h-24 mb-4" :class="fileIconColor" />
               <h3 class="text-lg font-semibold text-gray-900 mb-2">Preview not available</h3>
               <p class="text-gray-600 mb-4">This file type cannot be previewed in the browser.</p>
