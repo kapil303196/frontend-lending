@@ -105,7 +105,9 @@
                 <option value="contacted">Contacted</option>
                 <option value="in_review">In Review</option>
                 <option value="offered">Offered</option>
+                <option value="accepted">Accepted</option>
                 <option value="declined">Declined</option>
+                <option value="closed">Closed</option>
               </select>
             </div>
             <div class="text-sm text-gray-600">
@@ -225,11 +227,19 @@
                     <svg v-else-if="item.dealerMeta.internalStatus === 'offered'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
+                    <!-- Accepted Icon -->
+                    <svg v-else-if="item.dealerMeta.internalStatus === 'accepted'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                     <!-- Declined Icon -->
                     <svg v-else-if="item.dealerMeta.internalStatus === 'declined'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
-                    <span class="capitalize">{{ item.dealerMeta.internalStatus.replace('_', ' ') }}</span>
+                    <!-- Closed Icon -->
+                    <svg v-else-if="item.dealerMeta.internalStatus === 'closed'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                    </svg>
+                    <span>{{ formatStatusLabel(item.dealerMeta.internalStatus) }}</span>
                   </div>
                   <div v-else class="inline-flex items-center gap-2 px-3 py-2 rounded-lg font-semibold text-sm bg-gray-100 text-gray-600 border border-gray-200 shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -237,9 +247,21 @@
                     </svg>
                     <span>Not set</span>
                   </div>
-                  <p v-if="item.dealerMeta?.internalStatusUpdatedAt" class="text-xs text-gray-500 mt-1.5">
-                    Updated {{ formatDate(item.dealerMeta.internalStatusUpdatedAt) }}
-                  </p>
+                  <div class="flex items-center gap-2 mt-1.5">
+                    <p v-if="item.dealerMeta?.internalStatusUpdatedAt" class="text-xs text-gray-500">
+                      Updated {{ formatDate(item.dealerMeta.internalStatusUpdatedAt) }}
+                    </p>
+                    <button
+                      v-if="item.dealerMeta?.statusHistory?.length > 0"
+                      @click.stop="openStatusTimeline(item)"
+                      class="text-xs text-emerald-600 hover:text-emerald-700 font-medium inline-flex items-center gap-1"
+                    >
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      View timeline
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -263,7 +285,9 @@
                         <option value="contacted">Contacted</option>
                         <option value="in_review">In Review</option>
                         <option value="offered">Offered</option>
+                        <option value="accepted">Accepted</option>
                         <option value="declined">Declined</option>
+                        <option value="closed">Closed</option>
                       </select>
                       <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                         <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -276,7 +300,7 @@
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      <span class="capitalize font-medium">{{ item.localInternalStatus.replace('_', ' ') }}</span>
+                      <span class="font-medium">{{ formatStatusLabel(item.localInternalStatus) }}</span>
                       <span v-if="item.isSaving" class="text-xs opacity-75">(saving...)</span>
                       <span v-else-if="item.saveMessage" class="text-xs opacity-75">(saved)</span>
                     </div>
@@ -469,6 +493,71 @@
         </div>
       </div>
     </div>
+
+    <!-- Status Timeline Modal -->
+    <div v-if="isStatusTimelineOpen" class="fixed inset-0 z-50 flex items-center justify-center px-4">
+      <div class="absolute inset-0 bg-black bg-opacity-40" @click="closeStatusTimeline"></div>
+      <div class="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] flex flex-col overflow-hidden">
+        <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+          <div>
+            <h3 class="text-base sm:text-lg font-semibold text-gray-900">
+              Status Change Timeline
+            </h3>
+            <p class="text-xs sm:text-sm text-gray-500" v-if="statusTimelineItemId">
+              ID: {{ statusTimelineItemId }}
+            </p>
+          </div>
+          <button
+            type="button"
+            class="p-1.5 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+            @click="closeStatusTimeline"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="px-5 py-4 overflow-y-auto">
+          <div v-if="statusTimelineHistory && statusTimelineHistory.length > 0" class="relative">
+            <!-- Timeline line -->
+            <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+            
+            <!-- Timeline items -->
+            <div v-for="(entry, index) in statusTimelineHistory" :key="index" class="relative flex items-start gap-4 pb-6 last:pb-0">
+              <!-- Status dot -->
+              <div class="relative z-10 flex-shrink-0 w-8 h-8 rounded-full border-2 border-white shadow-sm flex items-center justify-center" :class="getStatusTimelineDotClass(entry.status)">
+                <div class="w-3 h-3 rounded-full" :class="getStatusTimelineDotInnerClass(entry.status)"></div>
+              </div>
+              
+              <!-- Content -->
+              <div class="flex-1 min-w-0 pt-1">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg font-semibold text-sm shadow-sm mb-2" :class="getStatusBadgeClass(entry.status)">
+                  <span>{{ formatStatusLabel(entry.status) }}</span>
+                </div>
+                <p class="text-xs text-gray-500 mb-1">
+                  {{ formatDateTime(entry.changedAt) }}
+                </p>
+                <p v-if="entry.changedByName || entry.changedByEmail" class="text-xs text-gray-600">
+                  Changed by: {{ entry.changedByName || entry.changedByEmail }}
+                </p>
+              </div>
+            </div>
+          </div>
+          <p v-else class="text-sm text-gray-500 text-center py-8">
+            No status changes recorded yet.
+          </p>
+        </div>
+        <div class="px-5 py-3 border-t border-gray-200 flex justify-end">
+          <button
+            type="button"
+            class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100"
+            @click="closeStatusTimeline"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -500,6 +589,10 @@ const selectedResponse = ref<any | null>(null);
 
 const isNotesModalOpen = ref(false);
 const notesModalItem = ref<any | null>(null);
+
+const isStatusTimelineOpen = ref(false);
+const statusTimelineHistory = ref<any[]>([]);
+const statusTimelineItemId = ref<string>('');
 
 const loadOffers = async (page?: number) => {
   try {
@@ -628,6 +721,7 @@ const saveDealerMeta = async (item: any, statusOnly: boolean = false) => {
       item.dealerMeta.id = updatedDealerOffer._id;
       item.dealerMeta.internalStatus = updatedDealerOffer.internalStatus;
       item.dealerMeta.notes = updatedDealerOffer.notes || [];
+      item.dealerMeta.statusHistory = updatedDealerOffer.statusHistory || [];
       
       // Update status update info if present
       if (updatedDealerOffer.internalStatusUpdatedAt) {
@@ -775,9 +869,17 @@ const getStatusBadgeClass = (status: string) => {
     'contacted': 'bg-purple-50 text-purple-700 border-2 border-purple-300 shadow-sm',
     'in_review': 'bg-yellow-50 text-yellow-700 border-2 border-yellow-300 shadow-sm',
     'offered': 'bg-emerald-50 text-emerald-700 border-2 border-emerald-300 shadow-sm',
-    'declined': 'bg-red-50 text-red-700 border-2 border-red-300 shadow-sm'
+    'accepted': 'bg-green-50 text-green-700 border-2 border-green-300 shadow-sm',
+    'declined': 'bg-red-50 text-red-700 border-2 border-red-300 shadow-sm',
+    'closed': 'bg-gray-50 text-gray-700 border-2 border-gray-400 shadow-sm'
   };
   return statusMap[status] || 'bg-gray-50 text-gray-700 border-2 border-gray-300 shadow-sm';
+};
+
+const formatStatusLabel = (status: string) => {
+  return status.replace('_', ' ').split(' ').map(word => 
+    word.charAt(0).toUpperCase() + word.slice(1)
+  ).join(' ');
 };
 
 
@@ -798,6 +900,58 @@ const notesModalItemBusinessName = computed(() =>
 const notesModalItemId = computed(() =>
   notesModalItem.value ? notesModalItem.value.response?.uniqueId : ''
 );
+
+const openStatusTimeline = (item: any) => {
+  const history = item.dealerMeta?.statusHistory || [];
+  // Sort by date, newest first
+  statusTimelineHistory.value = [...history].sort((a: any, b: any) => {
+    return new Date(b.changedAt).getTime() - new Date(a.changedAt).getTime();
+  });
+  statusTimelineItemId.value = item.response?.uniqueId || '';
+  isStatusTimelineOpen.value = true;
+};
+
+const closeStatusTimeline = () => {
+  isStatusTimelineOpen.value = false;
+  statusTimelineHistory.value = [];
+  statusTimelineItemId.value = '';
+};
+
+const getStatusTimelineDotClass = (status: string) => {
+  const statusMap: Record<string, string> = {
+    'new': 'bg-blue-50',
+    'contacted': 'bg-purple-50',
+    'in_review': 'bg-yellow-50',
+    'offered': 'bg-emerald-50',
+    'accepted': 'bg-green-50',
+    'declined': 'bg-red-50',
+    'closed': 'bg-gray-50'
+  };
+  return statusMap[status] || 'bg-gray-50';
+};
+
+const getStatusTimelineDotInnerClass = (status: string) => {
+  const statusMap: Record<string, string> = {
+    'new': 'bg-blue-600',
+    'contacted': 'bg-purple-600',
+    'in_review': 'bg-yellow-600',
+    'offered': 'bg-emerald-600',
+    'accepted': 'bg-green-600',
+    'declined': 'bg-red-600',
+    'closed': 'bg-gray-600'
+  };
+  return statusMap[status] || 'bg-gray-600';
+};
+
+const formatDateTime = (date: string) => {
+  return new Date(date).toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
 
 onMounted(async () => {
   // Ensure dealer token is valid; if not, redirect to login
