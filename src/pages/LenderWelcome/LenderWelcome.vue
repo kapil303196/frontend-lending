@@ -6,7 +6,7 @@
         <div class="absolute inset-0 bg-black/30"></div>
 
         <div class="relative z-10 flex flex-col min-h-screen">
-            <LogoHeader />
+            <!-- <LogoHeader /> -->
 
             <!-- Center Content -->
             <div class="flex-grow flex flex-col items-center justify-center text-center text-white px-4">
