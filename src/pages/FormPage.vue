@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-100">
     <!-- Header -->
-    <!-- <LogoHeader /> -->
+    <LogoHeader logoTheme="dark" />
     <!-- <header class="bg-white shadow-sm sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex items-center space-x-3">
@@ -52,7 +52,7 @@ import { useRoute } from 'vue-router'
 import type { MCAData } from '../types'
 import { useApi } from '../composables/useApi'
 import MultiStepForm from '../components/MultiStepForm.vue'
-// import LogoHeader from '../components/LogoHeader/LogoHeader.vue'
+import LogoHeader from '../components/LogoHeader/LogoHeader.vue'
 
 const route = useRoute()
 const uniqueId = route.params.uniqueId as string
