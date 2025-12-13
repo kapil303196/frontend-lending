@@ -56,13 +56,26 @@
         <label class="block text-sm font-semibold text-gray-700 mb-2">
           Social Security Number <span class="text-red-500">*</span>
         </label>
-        <div class="relative">
-          <input v-model="localData.ssn" :type="showSSN ? 'text' : 'password'" required maxlength="11" :class="[
-            'w-full px-4 py-3 pr-12 border-2 rounded-lg focus:ring-2 transition-all outline-none',
-            hasError('ssn') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
-          ]" placeholder="XXX-XX-XXXX" @input="formatSSN" @blur="validateSingleField('ssn')" />
-          <button type="button" @click="showSSN = !showSSN"
-            class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none">
+        <div
+          class="flex items-center w-full px-4 py-3 border-2 rounded-lg focus-within:ring-2 transition-all bg-white relative"
+          :class="[
+            hasError('ssn') ? 'border-red-500 focus-within:border-red-500 focus-within:ring-red-200' : 'border-gray-300 focus-within:border-blue-500 focus-within:ring-blue-200'
+          ]" @click="focusSSN">
+          <input id="ssn-1" :value="ssnPart1" :type="showSSN ? 'text' : 'password'" maxlength="3"
+            class="w-16 p-0 border-none outline-none text-center bg-transparent focus:ring-0" placeholder="XXX"
+            @input="e => handleSSNInput(e, 1)" @keydown="e => handleSSNKeydown(e, 1)" />
+          <span class="text-gray-400 font-bold mx-2">-</span>
+          <input id="ssn-2" :value="ssnPart2" :type="showSSN ? 'text' : 'password'" maxlength="2"
+            class="w-12 p-0 border-none outline-none text-center bg-transparent focus:ring-0" placeholder="XX"
+            @input="e => handleSSNInput(e, 2)" @keydown="e => handleSSNKeydown(e, 2)" />
+          <span class="text-gray-400 font-bold mx-2">-</span>
+          <input id="ssn-3" :value="ssnPart3" :type="showSSN ? 'text' : 'password'" maxlength="4"
+            class="w-20 p-0 border-none outline-none text-center bg-transparent focus:ring-0" placeholder="XXXX"
+            @input="e => handleSSNInput(e, 3)" @keydown="e => handleSSNKeydown(e, 3)"
+            @blur="validateSingleField('ssn')" />
+
+          <button type="button" @click.stop="showSSN = !showSSN"
+            class="absolute right-4 text-gray-500 hover:text-gray-700 focus:outline-none bg-white pl-2">
             <svg v-if="showSSN" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -149,7 +162,7 @@
           hasError('fundDirectSpecialist') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
         ]" placeholder="Specialist name or 'None'" @blur="validateSingleField('fundDirectSpecialist')" />
         <p v-if="hasError('fundDirectSpecialist')" class="mt-1 text-sm text-red-600">{{ getError('fundDirectSpecialist')
-          }}</p>
+        }}</p>
       </div>
     </div>
 
@@ -183,7 +196,7 @@ const emit = defineEmits<{
 }>()
 
 const localData = ref({ ...props.formData })
-const showSSN = ref(false)
+const showSSN = ref(false)  // Re-added state
 const { rules, validateField, hasError, getError, clearFieldError, errors } = useFormValidation()
 
 // Define validation rules for this step
@@ -249,17 +262,67 @@ const formatPhone = (e: Event) => {
   clearFieldError('phone')
 }
 
-const formatSSN = (e: Event) => {
-  const input = e.target as HTMLInputElement
-  let value = input.value.replace(/\D/g, '')
-  if (value.length > 9) value = value.slice(0, 9)
-  if (value.length > 5) {
-    value = value.slice(0, 3) + '-' + value.slice(3, 5) + '-' + value.slice(5)
-  } else if (value.length > 3) {
-    value = value.slice(0, 3) + '-' + value.slice(3)
+// SSN Handling
+const ssnPart1 = ref('')
+const ssnPart2 = ref('')
+const ssnPart3 = ref('')
+
+// Initialize from existing data
+watch(() => localData.value.ssn, (newVal) => {
+  const clean = (newVal || '').replace(/\D/g, '')
+  const currentParts = ssnPart1.value + ssnPart2.value + ssnPart3.value
+
+  if (clean !== currentParts) {
+    ssnPart1.value = clean.slice(0, 3)
+    ssnPart2.value = clean.slice(3, 5)
+    ssnPart3.value = clean.slice(5, 9)
   }
-  localData.value.ssn = value
+}, { immediate: true })
+
+const updateSSN = () => {
+  localData.value.ssn = ssnPart1.value + ssnPart2.value + ssnPart3.value
   clearFieldError('ssn')
+}
+
+const handleSSNInput = (e: Event, part: 1 | 2 | 3) => {
+  const input = e.target as HTMLInputElement
+  const val = input.value.replace(/\D/g, '') // Remove non-digits
+
+  if (part === 1) {
+    ssnPart1.value = val.slice(0, 3)
+    if (val.length >= 3) {
+      document.getElementById('ssn-2')?.focus()
+    }
+  } else if (part === 2) {
+    ssnPart2.value = val.slice(0, 2)
+    if (val.length >= 2) {
+      document.getElementById('ssn-3')?.focus()
+    }
+  } else {
+    ssnPart3.value = val.slice(0, 4)
+  }
+  updateSSN()
+}
+
+const handleSSNKeydown = (e: KeyboardEvent, part: 1 | 2 | 3) => {
+  if (e.key === 'Backspace') {
+    const input = e.target as HTMLInputElement
+    if (input.value.length === 0) {
+      if (part === 3) document.getElementById('ssn-2')?.focus()
+      if (part === 2) document.getElementById('ssn-1')?.focus()
+    }
+  }
+}
+
+const focusSSN = (e: MouseEvent) => {
+  // Prevent focusing if clicking the button or inputs directly (allow default behavior there)
+  if ((e.target as HTMLElement).tagName === 'INPUT' || (e.target as HTMLElement).closest('button')) return
+
+  // Focus logic: Find first empty or default to first
+  if (!ssnPart1.value) document.getElementById('ssn-1')?.focus()
+  else if (!ssnPart2.value) document.getElementById('ssn-2')?.focus()
+  else if (!ssnPart3.value) document.getElementById('ssn-3')?.focus()
+  else document.getElementById('ssn-1')?.focus()
 }
 
 defineExpose({ validateStep })

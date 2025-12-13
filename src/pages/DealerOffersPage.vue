@@ -744,7 +744,7 @@ const handleStatusUpdated = (updated: any) => {
 
 const handleLogout = () => {
   logout();
-  router.push('/dealer/login');
+  router.push('/mcalending/login');
 };
 
 const formatDate = (date: string) => {
@@ -926,7 +926,7 @@ onMounted(async () => {
   // Ensure dealer token is valid; if not, redirect to login
   const isValid = await verifyToken();
   if (!isValid) {
-    router.push('/dealer/login');
+    router.push('/mcalending/login');
     return;
   }
 

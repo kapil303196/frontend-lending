@@ -28,7 +28,7 @@ const router = createRouter({
       meta: { requiresGuest: true }
     },
     {
-      path: '/dealer/login',
+      path: '/mcalending/login',
       component: DealerLoginPage,
       meta: { requiresDealerGuest: true }
     },
@@ -43,7 +43,7 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
-      path: '/dealer/offers',
+      path: '/mcalending',
       component: DealerOffersPage,
       meta: { requiresDealerAuth: true }
     },
@@ -74,13 +74,13 @@ router.beforeEach(async (to, from, next) => {
 
   if (to.meta.requiresDealerAuth) {
     if (!isDealerAuthenticated.value) {
-      next('/dealer/login')
+      next('/mcalending/login')
       return
     }
 
     const isValidDealer = await verifyDealerToken()
     if (!isValidDealer) {
-      next('/dealer/login')
+      next('/mcalending/login')
       return
     }
   }
@@ -91,7 +91,7 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (to.meta.requiresDealerGuest && isDealerAuthenticated.value) {
-    next('/dealer/offers')
+    next('/mcalending')
     return
   }
 
