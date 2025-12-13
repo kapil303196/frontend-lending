@@ -6,10 +6,12 @@
 
       <!-- Modal -->
       <div class="fixed inset-0 flex items-center justify-center p-0 md:p-4 pointer-events-none">
-        <div class="relative bg-white rounded-none md:rounded-2xl shadow-2xl max-w-4xl w-full h-full md:h-auto md:max-h-[90vh] flex flex-col overflow-y-auto pointer-events-auto"
+        <div
+          class="relative bg-white rounded-none md:rounded-2xl shadow-2xl max-w-4xl w-full h-full md:h-auto md:max-h-[90vh] flex flex-col overflow-y-auto pointer-events-auto"
           @click.stop>
           <!-- Header -->
-          <div class="sticky top-0 bg-white border-b border-gray-200 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between z-10 flex-shrink-0 shadow-sm">
+          <div
+            class="sticky top-0 bg-white border-b border-gray-200 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between z-10 flex-shrink-0 shadow-sm">
             <div>
               <h2 class="text-2xl font-bold text-gray-900">
                 {{ response.formData?.businessInfo?.businessName || 'Application Details' }}
@@ -29,7 +31,8 @@
             <div class="mb-6">
               <label class="block text-sm font-medium text-gray-700 mb-2">Status Management</label>
               <div class="flex flex-wrap items-center gap-2 sm:gap-3">
-                <span :class="statusColorClass" class="inline-flex px-4 py-2.5 sm:px-4 sm:py-2 rounded-lg text-base sm:text-sm font-bold sm:font-semibold shadow-md sm:shadow-sm border-2 sm:border-0 whitespace-nowrap">
+                <span :class="statusColorClass"
+                  class="inline-flex px-4 py-2.5 sm:px-4 sm:py-2 rounded-lg text-base sm:text-sm font-bold sm:font-semibold shadow-md sm:shadow-sm border-2 sm:border-0 whitespace-nowrap">
                   {{ formatStatusLabel(response.status) }}
                 </span>
 
@@ -132,7 +135,7 @@
                   :value="'$' + formData.amountRequested" />
                 <InfoItem v-if="formData.hasExistingBalances" label="Has Existing Balances"
                   :value="formData.hasExistingBalances" />
-                <InfoItem v-if="formData.fundDirectSpecialist" label="Fund Direct Specialist"
+                <InfoItem v-if="formData.fundDirectSpecialist" label="EZBiz Funding Specialist"
                   :value="formData.fundDirectSpecialist" />
               </div>
             </div>
@@ -171,7 +174,7 @@
                     <div class="text-left">
                       <p class="text-sm font-medium text-gray-900">{{ file.originalName }}</p>
                       <p class="text-xs text-gray-500">{{ formatFileSize(file.size) }} • {{ formatDate(file.uploadedAt)
-                        }}</p>
+                      }}</p>
                     </div>
                   </div>
                   <div class="flex items-center gap-2">
@@ -217,7 +220,8 @@
           </div>
 
           <!-- Footer -->
-          <div class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 md:px-6 py-3 md:py-4 flex justify-end flex-shrink-0 z-10">
+          <div
+            class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-4 md:px-6 py-3 md:py-4 flex justify-end flex-shrink-0 z-10">
             <button @click="close"
               class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors">
               Close

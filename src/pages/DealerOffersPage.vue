@@ -4,13 +4,8 @@
     <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
       <div class="w-full px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
-          <div class="flex items-center">
-            <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg mr-3 shadow-sm">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M3 10h4l3 10 4-18 3 8h4" />
-              </svg>
-            </div>
+          <div class="flex items-center gap-5">
+            <img src="/assets/images/lender-logo-light-2.svg" style="width: 130px;" alt="" />
             <div>
               <h1 class="text-lg sm:text-xl font-bold text-gray-900 leading-tight">Dealer Portal</h1>
               <p class="text-xs text-gray-500 hidden sm:block">Manage rejected offers</p>
@@ -22,11 +17,8 @@
               <p class="text-sm font-medium text-gray-900">{{ dealerUser?.name || dealerUser?.email }}</p>
               <p class="text-xs text-gray-500">Dealer</p>
             </div>
-            <button 
-              @click="handleLogout"
-              class="p-2 text-gray-400 hover:text-gray-600 transition-all rounded-lg hover:bg-gray-100"
-              title="Logout"
-            >
+            <button @click="handleLogout"
+              class="p-2 text-gray-400 hover:text-gray-600 transition-all rounded-lg hover:bg-gray-100" title="Logout">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -39,7 +31,8 @@
 
     <main class="w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
       <!-- Stats Summary -->
-      <div v-if="!isLoading && !error && pagination.total > 0" class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      <div v-if="!isLoading && !error && pagination.total > 0"
+        class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <p class="text-xs sm:text-sm font-medium text-gray-500 mb-1">Total Offers</p>
           <p class="text-xl sm:text-2xl font-bold text-gray-900">{{ pagination.total }}</p>
@@ -47,19 +40,19 @@
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <p class="text-xs sm:text-sm font-medium text-gray-500 mb-1">With Status</p>
           <p class="text-xl sm:text-2xl font-bold text-emerald-600">
-            {{ offers.filter(o => o.dealerMeta?.internalStatus).length }}
+            {{offers.filter(o => o.dealerMeta?.internalStatus).length}}
           </p>
         </div>
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <p class="text-xs sm:text-sm font-medium text-gray-500 mb-1">With Notes</p>
           <p class="text-xl sm:text-2xl font-bold text-blue-600">
-            {{ offers.filter(o => o.dealerMeta?.notes?.length > 0).length }}
+            {{offers.filter(o => o.dealerMeta?.notes?.length > 0).length}}
           </p>
         </div>
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <p class="text-xs sm:text-sm font-medium text-gray-500 mb-1">New</p>
           <p class="text-xl sm:text-2xl font-bold text-orange-600">
-            {{ offers.filter(o => !o.dealerMeta?.internalStatus || o.dealerMeta.internalStatus === 'new').length }}
+            {{offers.filter(o => !o.dealerMeta?.internalStatus || o.dealerMeta.internalStatus === 'new').length}}
           </p>
         </div>
       </div>
@@ -75,11 +68,8 @@
                 Review offers and manage internal statuses and notes.
               </p>
             </div>
-            <button 
-              @click="() => loadOffers()" 
-              :disabled="isLoading"
-              class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            <button @click="() => loadOffers()" :disabled="isLoading"
+              class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
               <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M4 4v6h6M20 20v-6h-6M5 19l4.5-4.5M19 5l-4.5 4.5" />
@@ -94,11 +84,8 @@
           <div class="flex flex-col sm:flex-row sm:items-center gap-4">
             <div class="flex-1">
               <label class="block text-sm font-semibold text-gray-700 mb-2">Filter by Internal Status</label>
-              <select
-                v-model="statusFilter"
-                @change="handleFilterChange"
-                class="w-full sm:w-64 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
-              >
+              <select v-model="statusFilter" @change="handleFilterChange"
+                class="w-full sm:w-64 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white">
                 <option value="">All Offers</option>
                 <option value="none">No Status</option>
                 <option value="new">New</option>
@@ -121,23 +108,24 @@
         <div class="p-4 sm:p-6">
           <!-- Loading State -->
           <div v-if="isLoading" class="flex flex-col items-center justify-center py-16">
-            <div class="animate-spin rounded-full h-12 w-12 border-4 border-emerald-200 border-t-emerald-600 mb-4"></div>
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-emerald-200 border-t-emerald-600 mb-4">
+            </div>
             <p class="text-sm text-gray-500">Loading offers...</p>
           </div>
 
           <!-- Error State -->
           <div v-else-if="error" class="bg-red-50 border border-red-200 rounded-lg p-4 sm:p-6">
             <div class="flex items-start">
-              <svg class="w-5 h-5 text-red-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg class="w-5 h-5 text-red-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <div class="flex-1">
                 <h3 class="text-sm font-semibold text-red-800 mb-1">Error loading offers</h3>
                 <p class="text-sm text-red-700 mb-3">{{ error }}</p>
-                <button 
-                  @click="() => loadOffers()" 
-                  class="text-sm font-medium text-red-600 hover:text-red-700 underline"
-                >
+                <button @click="() => loadOffers()"
+                  class="text-sm font-medium text-red-600 hover:text-red-700 underline">
                   Try again
                 </button>
               </div>
@@ -145,9 +133,11 @@
           </div>
 
           <!-- Empty State -->
-          <div v-else-if="offers.length === 0" class="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-8 sm:p-12 text-center">
+          <div v-else-if="offers.length === 0"
+            class="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-8 sm:p-12 text-center">
             <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             <h3 class="text-lg font-semibold text-gray-900 mb-2">No rejected offers</h3>
             <p class="text-sm text-gray-500 max-w-sm mx-auto">
@@ -157,26 +147,24 @@
 
           <!-- Offers List (rows, with clear separation) -->
           <div v-else class="space-y-4">
-            <div
-              v-for="item in offers"
-              :key="item.response._id"
-              @click="openDetails(item.response)"
-              class="bg-white border border-gray-200 rounded-lg px-3 sm:px-4 py-4 sm:py-5 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all flex flex-col gap-3 cursor-pointer group"
-            >
+            <div v-for="item in offers" :key="item.response._id" @click="openDetails(item.response)"
+              class="bg-white border border-gray-200 rounded-lg px-3 sm:px-4 py-4 sm:py-5 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all flex flex-col gap-3 cursor-pointer group">
               <!-- Top row: basic info + quick actions -->
               <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <div class="flex-1 min-w-0">
                   <div class="text-left w-full">
-                      <p class="text-base font-semibold text-gray-900 truncate group-hover:text-emerald-700 transition-colors">
+                    <p
+                      class="text-base font-semibold text-gray-900 truncate group-hover:text-emerald-700 transition-colors">
                       {{ getBusinessName(item.response) }}
                     </p>
-                      <p class="text-sm text-gray-500 font-mono">
+                    <p class="text-sm text-gray-500 font-mono">
                       ID: {{ item.response.uniqueId }}
                     </p>
-                      <p class="text-sm text-gray-500 flex items-center gap-1 mt-1">
+                    <p class="text-sm text-gray-500 flex items-center gap-1 mt-1">
                       <span class="truncate">{{ getOwnerName(item.response) || 'Owner unknown' }}</span>
                       <span class="hidden sm:inline text-gray-300">•</span>
-                      <span class="hidden sm:inline truncate" v-if="getEmail(item.response)">{{ getEmail(item.response) }}</span>
+                      <span class="hidden sm:inline truncate" v-if="getEmail(item.response)">{{ getEmail(item.response)
+                        }}</span>
                     </p>
                   </div>
                 </div>
@@ -184,10 +172,13 @@
                   <p class="text-sm text-gray-500 whitespace-nowrap">
                     Created: {{ formatDate(item.response.createdAt) }}
                   </p>
-                  <div class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg transition-all shadow-sm">
+                  <div
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg transition-all shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
                     <span>View Details</span>
                   </div>
@@ -210,40 +201,57 @@
                 </div>
                 <div>
                   <p class="font-medium text-gray-500 mb-1.5">Internal Status</p>
-                  <div v-if="item.dealerMeta?.internalStatus" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg font-semibold text-sm shadow-sm" :class="getStatusBadgeClass(item.dealerMeta.internalStatus)">
+                  <div v-if="item.dealerMeta?.internalStatus"
+                    class="inline-flex items-center gap-2 px-3 py-2 rounded-lg font-semibold text-sm shadow-sm"
+                    :class="getStatusBadgeClass(item.dealerMeta.internalStatus)">
                     <!-- New Icon -->
-                    <svg v-if="item.dealerMeta.internalStatus === 'new'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    <svg v-if="item.dealerMeta.internalStatus === 'new'" class="w-4 h-4" fill="none"
+                      stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
                     <!-- Contacted Icon -->
-                    <svg v-else-if="item.dealerMeta.internalStatus === 'contacted'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    <svg v-else-if="item.dealerMeta.internalStatus === 'contacted'" class="w-4 h-4" fill="none"
+                      stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                     <!-- In Review Icon -->
-                    <svg v-else-if="item.dealerMeta.internalStatus === 'in_review'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                    <svg v-else-if="item.dealerMeta.internalStatus === 'in_review'" class="w-4 h-4" fill="none"
+                      stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                     </svg>
                     <!-- Offered Icon -->
-                    <svg v-else-if="item.dealerMeta.internalStatus === 'offered'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg v-else-if="item.dealerMeta.internalStatus === 'offered'" class="w-4 h-4" fill="none"
+                      stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <!-- Accepted Icon -->
-                    <svg v-else-if="item.dealerMeta.internalStatus === 'accepted'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg v-else-if="item.dealerMeta.internalStatus === 'accepted'" class="w-4 h-4" fill="none"
+                      stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <!-- Declined Icon -->
-                    <svg v-else-if="item.dealerMeta.internalStatus === 'declined'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg v-else-if="item.dealerMeta.internalStatus === 'declined'" class="w-4 h-4" fill="none"
+                      stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                     <!-- Closed Icon -->
-                    <svg v-else-if="item.dealerMeta.internalStatus === 'closed'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                    <svg v-else-if="item.dealerMeta.internalStatus === 'closed'" class="w-4 h-4" fill="none"
+                      stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
                     </svg>
                     <span>{{ formatStatusLabel(item.dealerMeta.internalStatus) }}</span>
                   </div>
-                  <div v-else class="inline-flex items-center gap-2 px-3 py-2 rounded-lg font-semibold text-sm bg-gray-100 text-gray-600 border border-gray-200 shadow-sm">
+                  <div v-else
+                    class="inline-flex items-center gap-2 px-3 py-2 rounded-lg font-semibold text-sm bg-gray-100 text-gray-600 border border-gray-200 shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <span>Not set</span>
                   </div>
@@ -251,13 +259,11 @@
                     <p v-if="item.dealerMeta?.internalStatusUpdatedAt" class="text-xs text-gray-500">
                       Updated {{ formatDate(item.dealerMeta.internalStatusUpdatedAt) }}
                     </p>
-                    <button
-                      v-if="item.dealerMeta?.statusHistory?.length > 0"
-                      @click.stop="openStatusTimeline(item)"
-                      class="text-xs text-emerald-600 hover:text-emerald-700 font-medium inline-flex items-center gap-1"
-                    >
+                    <button v-if="item.dealerMeta?.statusHistory?.length > 0" @click.stop="openStatusTimeline(item)"
+                      class="text-xs text-emerald-600 hover:text-emerald-700 font-medium inline-flex items-center gap-1">
                       <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       View timeline
                     </button>
@@ -272,14 +278,10 @@
                   <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Internal Status</label>
                     <div class="relative">
-                      <select
-                        v-model="item.localInternalStatus"
-                        @change="handleStatusChange(item)"
-                        @click.stop
+                      <select v-model="item.localInternalStatus" @change="handleStatusChange(item)" @click.stop
                         :disabled="item.isSaving"
                         class="w-full px-3 py-2.5 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all bg-white appearance-none cursor-pointer font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                        :class="item.localInternalStatus ? getStatusBadgeClass(item.localInternalStatus) : 'text-gray-700'"
-                      >
+                        :class="item.localInternalStatus ? getStatusBadgeClass(item.localInternalStatus) : 'text-gray-700'">
                         <option value="">Not set</option>
                         <option value="new">New</option>
                         <option value="contacted">Contacted</option>
@@ -295,10 +297,16 @@
                         </svg>
                       </div>
                     </div>
-                    <div v-if="item.localInternalStatus" class="mt-2 inline-flex items-center gap-2 px-2 py-1 rounded text-xs" :class="getStatusBadgeClass(item.localInternalStatus)">
-                      <svg v-if="item.isSaving" class="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <div v-if="item.localInternalStatus"
+                      class="mt-2 inline-flex items-center gap-2 px-2 py-1 rounded text-xs"
+                      :class="getStatusBadgeClass(item.localInternalStatus)">
+                      <svg v-if="item.isSaving" class="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
                       </svg>
                       <span class="font-medium">{{ formatStatusLabel(item.localInternalStatus) }}</span>
                       <span v-if="item.isSaving" class="text-xs opacity-75">(saving...)</span>
@@ -310,46 +318,26 @@
                       Add Note
                       <span class="text-xs font-normal text-gray-500 ml-2">(Ctrl+Enter to save)</span>
                     </label>
-                    <textarea
-                      v-model="item.newNote"
-                      @keydown.ctrl.enter="saveDealerMeta(item)"
-                      @click.stop
-                      rows="2"
+                    <textarea v-model="item.newNote" @keydown.ctrl.enter="saveDealerMeta(item)" @click.stop rows="2"
                       class="w-full px-3 py-2 text-base border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
-                      placeholder="Add internal note..."
-                    ></textarea>
+                      placeholder="Add internal note..."></textarea>
                   </div>
                   <div class="flex items-center justify-between gap-3">
-                    <button
-                      @click.stop="saveDealerMeta(item)"
-                      :disabled="item.isSaving || !item.newNote?.trim()"
-                      class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <svg
-                        v-if="item.isSaving"
-                        class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          class="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          stroke-width="4"
-                        ></circle>
-                        <path
-                          class="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
+                    <button @click.stop="saveDealerMeta(item)" :disabled="item.isSaving || !item.newNote?.trim()"
+                      class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
+                      <svg v-if="item.isSaving" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
                       </svg>
                       <span>{{ item.isSaving ? 'Saving...' : 'Save Changes' }}</span>
                     </button>
                     <div class="flex items-center gap-2">
-                      <span v-if="item.saveMessage" class="text-sm text-emerald-600 font-medium">{{ item.saveMessage }}</span>
+                      <span v-if="item.saveMessage" class="text-sm text-emerald-600 font-medium">{{ item.saveMessage
+                        }}</span>
                     </div>
                   </div>
                 </div>
@@ -367,14 +355,13 @@
                     <p class="text-xs text-gray-500 flex justify-between gap-2">
                       <span>{{ formatDate(getLastNote(item.dealerMeta)?.createdAt) }}</span>
                       <span v-if="getLastNote(item.dealerMeta)?.createdByEmail" class="truncate">
-                        {{ getLastNote(item.dealerMeta)?.createdByName || getLastNote(item.dealerMeta)?.createdByEmail }}
+                        {{ getLastNote(item.dealerMeta)?.createdByName || getLastNote(item.dealerMeta)?.createdByEmail
+                        }}
                       </span>
                     </p>
-                    <button
-                      type="button"
+                    <button type="button"
                       class="mt-2 text-xs font-medium text-emerald-600 hover:text-emerald-700 inline-flex items-center gap-1"
-                      @click.stop="openNotesModal(item)"
-                    >
+                      @click.stop="openNotesModal(item)">
                       <span>View all notes</span>
                       <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -387,41 +374,33 @@
           </div>
 
           <!-- Pagination Controls -->
-          <div v-if="!isLoading && !error && offers.length > 0" class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-gray-200">
+          <div v-if="!isLoading && !error && offers.length > 0"
+            class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-gray-200">
             <div class="text-sm text-gray-600">
-              Showing {{ ((pagination.page - 1) * pagination.limit) + 1 }} to {{ Math.min(pagination.page * pagination.limit, pagination.total) }} of {{ pagination.total }} offers
+              Showing {{ ((pagination.page - 1) * pagination.limit) + 1 }} to {{ Math.min(pagination.page *
+                pagination.limit, pagination.total) }} of {{ pagination.total }} offers
             </div>
             <div class="flex items-center gap-2">
-              <button
-                @click="goToPage(pagination.page - 1)"
-                :disabled="pagination.page === 1 || isLoading"
-                class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
+              <button @click="goToPage(pagination.page - 1)" :disabled="pagination.page === 1 || isLoading"
+                class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                 Previous
               </button>
               <div class="flex items-center gap-1">
                 <template v-for="pageNum in getPageNumbers()" :key="pageNum">
-                  <button
-                    v-if="typeof pageNum === 'number'"
-                    @click="goToPage(pageNum)"
-                    :disabled="isLoading"
-                    :class="[
-                      'px-3 py-2 text-sm font-medium rounded-lg transition-colors',
-                      pageNum === pagination.page
-                        ? 'bg-emerald-600 text-white'
-                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed'
-                    ]"
-                  >
+                  <button v-if="typeof pageNum === 'number'" @click="goToPage(pageNum)" :disabled="isLoading" :class="[
+                    'px-3 py-2 text-sm font-medium rounded-lg transition-colors',
+                    pageNum === pagination.page
+                      ? 'bg-emerald-600 text-white'
+                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed'
+                  ]">
                     {{ pageNum }}
                   </button>
                   <span v-else class="px-2 text-gray-500">{{ pageNum }}</span>
                 </template>
               </div>
-              <button
-                @click="goToPage(pagination.page + 1)"
+              <button @click="goToPage(pagination.page + 1)"
                 :disabled="pagination.page === pagination.pages || isLoading"
-                class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
+                class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                 Next
               </button>
             </div>
@@ -431,19 +410,16 @@
     </main>
 
     <!-- Full details modal (read-only like admin) -->
-    <ResponseModal
-      v-if="selectedResponse"
-      :isOpen="isModalOpen"
-      :response="selectedResponse"
-      @close="closeDetails"
-      @statusUpdated="handleStatusUpdated"
-    />
+    <ResponseModal v-if="selectedResponse" :isOpen="isModalOpen" :response="selectedResponse" @close="closeDetails"
+      @statusUpdated="handleStatusUpdated" />
 
     <!-- Notes history modal -->
     <div v-if="isNotesModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-0 md:px-4">
       <div class="absolute inset-0 bg-black bg-opacity-40" @click="closeNotesModal"></div>
-      <div class="relative bg-white rounded-none md:rounded-2xl shadow-2xl max-w-lg w-full h-full md:h-auto md:max-h-[80vh] flex flex-col overflow-hidden">
-        <div class="sticky top-0 bg-white border-b border-gray-200 px-4 md:px-5 py-3 md:py-4 flex items-center justify-between z-10">
+      <div
+        class="relative bg-white rounded-none md:rounded-2xl shadow-2xl max-w-lg w-full h-full md:h-auto md:max-h-[80vh] flex flex-col overflow-hidden">
+        <div
+          class="sticky top-0 bg-white border-b border-gray-200 px-4 md:px-5 py-3 md:py-4 flex items-center justify-between z-10">
           <div>
             <h3 class="text-base sm:text-lg font-semibold text-gray-900">
               Notes for {{ notesModalItemBusinessName }}
@@ -452,22 +428,16 @@
               ID: {{ notesModalItemId }}
             </p>
           </div>
-          <button
-            type="button"
-            class="p-1.5 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100"
-            @click="closeNotesModal"
-          >
+          <button type="button" class="p-1.5 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+            @click="closeNotesModal">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
         <div class="px-4 md:px-5 py-3 md:py-4 overflow-y-auto space-y-3 flex-1">
-          <div
-            v-for="note in notesModalNotes"
-            :key="note._id || note.createdAt"
-            class="border border-gray-200 rounded-lg px-3 py-2 bg-gray-50"
-          >
+          <div v-for="note in notesModalNotes" :key="note._id || note.createdAt"
+            class="border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
             <p class="text-sm text-gray-900 mb-1">
               {{ note.text }}
             </p>
@@ -483,11 +453,9 @@
           </p>
         </div>
         <div class="px-4 md:px-5 py-3 border-t border-gray-200 flex justify-end">
-          <button
-            type="button"
+          <button type="button"
             class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100"
-            @click="closeNotesModal"
-          >
+            @click="closeNotesModal">
             Close
           </button>
         </div>
@@ -497,8 +465,10 @@
     <!-- Status Timeline Modal -->
     <div v-if="isStatusTimelineOpen" class="fixed inset-0 z-50 flex items-center justify-center p-0 md:px-4">
       <div class="absolute inset-0 bg-black bg-opacity-40" @click="closeStatusTimeline"></div>
-      <div class="relative bg-white rounded-none md:rounded-2xl shadow-2xl max-w-2xl w-full h-full md:h-auto md:max-h-[80vh] flex flex-col overflow-hidden">
-        <div class="sticky top-0 bg-white border-b border-gray-200 px-4 md:px-5 py-3 md:py-4 flex items-center justify-between z-10">
+      <div
+        class="relative bg-white rounded-none md:rounded-2xl shadow-2xl max-w-2xl w-full h-full md:h-auto md:max-h-[80vh] flex flex-col overflow-hidden">
+        <div
+          class="sticky top-0 bg-white border-b border-gray-200 px-4 md:px-5 py-3 md:py-4 flex items-center justify-between z-10">
           <div>
             <h3 class="text-base sm:text-lg font-semibold text-gray-900">
               Status Change Timeline
@@ -507,11 +477,8 @@
               ID: {{ statusTimelineItemId }}
             </p>
           </div>
-          <button
-            type="button"
-            class="p-1.5 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100"
-            @click="closeStatusTimeline"
-          >
+          <button type="button" class="p-1.5 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+            @click="closeStatusTimeline">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -521,17 +488,21 @@
           <div v-if="statusTimelineHistory && statusTimelineHistory.length > 0" class="relative">
             <!-- Timeline line -->
             <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-            
+
             <!-- Timeline items -->
-            <div v-for="(entry, index) in statusTimelineHistory" :key="index" class="relative flex items-start gap-4 pb-6 last:pb-0">
+            <div v-for="(entry, index) in statusTimelineHistory" :key="index"
+              class="relative flex items-start gap-4 pb-6 last:pb-0">
               <!-- Status dot -->
-              <div class="relative z-10 flex-shrink-0 w-8 h-8 rounded-full border-2 border-white shadow-sm flex items-center justify-center" :class="getStatusTimelineDotClass(entry.status)">
+              <div
+                class="relative z-10 flex-shrink-0 w-8 h-8 rounded-full border-2 border-white shadow-sm flex items-center justify-center"
+                :class="getStatusTimelineDotClass(entry.status)">
                 <div class="w-3 h-3 rounded-full" :class="getStatusTimelineDotInnerClass(entry.status)"></div>
               </div>
-              
+
               <!-- Content -->
               <div class="flex-1 min-w-0 pt-1">
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg font-semibold text-sm shadow-sm mb-2" :class="getStatusBadgeClass(entry.status)">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg font-semibold text-sm shadow-sm mb-2"
+                  :class="getStatusBadgeClass(entry.status)">
                   <span>{{ formatStatusLabel(entry.status) }}</span>
                 </div>
                 <p class="text-xs text-gray-500 mb-1">
@@ -548,11 +519,9 @@
           </p>
         </div>
         <div class="px-4 md:px-5 py-3 border-t border-gray-200 flex justify-end">
-          <button
-            type="button"
+          <button type="button"
             class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 rounded-lg hover:bg-gray-100"
-            @click="closeStatusTimeline"
-          >
+            @click="closeStatusTimeline">
             Close
           </button>
         </div>
@@ -598,20 +567,20 @@ const loadOffers = async (page?: number) => {
   try {
     isLoading.value = true;
     error.value = null;
-    
+
     if (page !== undefined) {
       pagination.value.page = page;
     }
-    
+
     const params: any = {
       page: pagination.value.page,
       limit: pagination.value.limit
     };
-    
+
     if (statusFilter.value) {
       params.internalStatus = statusFilter.value;
     }
-    
+
     const response = await axios.get(`${config.apiUrl}/dealer/offers/rejected`, { params });
     const data = response.data.data || [];
 
@@ -623,7 +592,7 @@ const loadOffers = async (page?: number) => {
       isSaving: false,
       saveMessage: ''
     }));
-    
+
     // Update pagination from response
     if (response.data.pagination) {
       pagination.value = {
@@ -712,17 +681,17 @@ const saveDealerMeta = async (item: any, statusOnly: boolean = false) => {
     // Update local state with the response data (background update)
     if (response.data.success && response.data.data) {
       const updatedDealerOffer = response.data.data;
-      
+
       // Update the item's dealerMeta locally without reloading everything
       if (!item.dealerMeta) {
         item.dealerMeta = {};
       }
-      
+
       item.dealerMeta.id = updatedDealerOffer._id;
       item.dealerMeta.internalStatus = updatedDealerOffer.internalStatus;
       item.dealerMeta.notes = updatedDealerOffer.notes || [];
       item.dealerMeta.statusHistory = updatedDealerOffer.statusHistory || [];
-      
+
       // Update status update info if present
       if (updatedDealerOffer.internalStatusUpdatedAt) {
         item.dealerMeta.internalStatusUpdatedAt = updatedDealerOffer.internalStatusUpdatedAt;
@@ -730,7 +699,7 @@ const saveDealerMeta = async (item: any, statusOnly: boolean = false) => {
         item.dealerMeta.internalStatusUpdatedByEmail = updatedDealerOffer.internalStatusUpdatedByEmail;
         item.dealerMeta.internalStatusUpdatedByName = updatedDealerOffer.internalStatusUpdatedByName;
       }
-      
+
       // Update local status to match
       item.localInternalStatus = updatedDealerOffer.internalStatus || '';
       // Update original status to track future changes
@@ -742,7 +711,7 @@ const saveDealerMeta = async (item: any, statusOnly: boolean = false) => {
     if (payload.note) {
       item.newNote = '';
     }
-    
+
     // Clear save message after 2 seconds
     setTimeout(() => {
       item.saveMessage = '';
@@ -877,7 +846,7 @@ const getStatusBadgeClass = (status: string) => {
 };
 
 const formatStatusLabel = (status: string) => {
-  return status.replace('_', ' ').split(' ').map(word => 
+  return status.replace('_', ' ').split(' ').map(word =>
     word.charAt(0).toUpperCase() + word.slice(1)
   ).join(' ');
 };
@@ -964,5 +933,3 @@ onMounted(async () => {
   await loadOffers();
 });
 </script>
-
-

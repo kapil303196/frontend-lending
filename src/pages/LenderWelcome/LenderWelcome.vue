@@ -30,9 +30,9 @@
             </div>
 
             <!-- Footer -->
-            <div class="pb-4">
+            <!-- <div class="pb-4">
                 <Footer />
-            </div>
+            </div> -->
         </div>
     </div>
 </template>

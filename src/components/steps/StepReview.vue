@@ -94,7 +94,7 @@
       <p class="font-semibold text-gray-900">By signing below, each of the above listed business and business
         owner/officer (individually and collectively, "you") authorize:</p>
 
-      <p>Fund Direct and each of its representatives, successors, assigns and designees ("Recipients") that may be
+      <p>EZBiz Funding and each of its representatives, successors, assigns and designees ("Recipients") that may be
         involved with or acquire commercial loans having daily repayment features or purchases of future receivables
         including Merchant Cash Advance transactions, including without limitation the application therefor
         (collectively, "Transactions") to obtain consumer or personal, business and investigative reports and other
@@ -102,10 +102,10 @@
         reporting agencies, such as TransUnion, Experian and Equifax, and from other credit bureaus, banks, creditors
         and other third parties.</p>
 
-      <p>You also authorize Fund Direct to transmit this application form, along with any of the foregoing information
+      <p>You also authorize EZBiz Funding to transmit this application form, along with any of the foregoing information
         obtained in connection with this application, to any or all of the Recipients for the foregoing purposes. You
         also consent to the release, by any creditor or financial institution, of any information relating to any of
-        you, to Fund Direct and to each of the Recipients, on its own behalf.</p>
+        you, to EZBiz Funding and to each of the Recipients, on its own behalf.</p>
 
       <p class="font-semibold text-gray-900">CONSENT TO TELEPHONE CALLS:</p>
       <p>You expressly consent to receiving marketing and other calls and messages, to landline, wireless or similar
@@ -119,7 +119,7 @@
         will be provided to you either on the screen, on recipients' website or via electronic mail to the email address
         you provided.</p>
 
-      <p class="text-xs text-gray-500 mt-4">Fund Direct online application is secured by SSL connection, making sure
+      <p class="text-xs text-gray-500 mt-4">EZBiz Funding online application is secured by SSL connection, making sure
         that your information is protected.</p>
     </div>
 
