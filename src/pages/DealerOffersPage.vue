@@ -7,15 +7,15 @@
           <div class="flex items-center gap-5">
             <img src="/assets/images/lender-logo-light-2.svg" style="width: 130px;" alt="" />
             <div>
-              <h1 class="text-lg sm:text-xl font-bold text-gray-900 leading-tight">Dealer Portal</h1>
-              <p class="text-xs text-gray-500 hidden sm:block">Manage rejected offers</p>
+              <!-- <h1 class="text-lg sm:text-xl font-bold text-gray-900 leading-tight">Dealer Portal</h1>
+              <p class="text-xs text-gray-500 hidden sm:block">Manage rejected offers</p> -->
             </div>
           </div>
 
           <div class="flex items-center gap-3">
             <div class="text-right hidden sm:block">
               <p class="text-sm font-medium text-gray-900">{{ dealerUser?.name || dealerUser?.email }}</p>
-              <p class="text-xs text-gray-500">Dealer</p>
+              <!-- <p class="text-xs text-gray-500">MCA Lending</p> -->
             </div>
             <button @click="handleLogout"
               class="p-2 text-gray-400 hover:text-gray-600 transition-all rounded-lg hover:bg-gray-100" title="Logout">

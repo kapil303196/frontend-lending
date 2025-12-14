@@ -8,8 +8,8 @@
               d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
         </div>
-        <h2 class="text-3xl font-bold text-gray-900">Dealer Login</h2>
-        <p class="mt-2 text-gray-600">Sign in to view offers</p>
+        <!-- <h2 class="text-3xl font-bold text-gray-900">Dealer Login</h2> -->
+        <p class="mt-2 text-gray-600">Sign in to see applications</p>
       </div>
 
       <div class="bg-white rounded-2xl shadow-xl p-8">
