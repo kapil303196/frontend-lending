@@ -44,6 +44,8 @@ export interface FormData {
   amountRequested: string
   monthlyRevenue: string
   hasExistingBalances: string
+  existingLender?: string
+  existingBalance?: string
   numberOfOwners: string
   
   // Primary Owner Information

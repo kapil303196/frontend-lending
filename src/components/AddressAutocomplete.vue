@@ -3,39 +3,29 @@
     <label v-if="label" class="block text-sm font-semibold text-gray-700 mb-2">
       {{ label }} <span v-if="required" class="text-red-500">*</span>
     </label>
-    
-    <input
-      v-model="searchQuery"
-      type="text"
-      :placeholder="placeholder"
-      :required="required"
-      @input="handleInput"
-      @focus="showSuggestions = true"
-      @blur="handleBlur"
-      class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
-    />
+
+    <input v-model="searchQuery" type="text" :placeholder="placeholder" :required="required" @input="handleInput"
+      @focus="showSuggestions = true" @blur="handleBlur" :class="[
+        'w-full px-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
+        error ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+      ]" />
+
+    <!-- Error Message -->
+    <p v-if="error" class="mt-1 text-sm text-red-600">{{ error }}</p>
 
     <!-- Suggestions Dropdown -->
-    <div
-      v-if="showSuggestions && suggestions.length > 0"
-      class="absolute z-50 w-full mt-1 bg-white border-2 border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
-    >
-      <div
-        v-for="(suggestion, index) in suggestions"
-        :key="suggestion.placeId"
+    <div v-if="showSuggestions && suggestions.length > 0"
+      class="absolute z-50 w-full mt-1 bg-white border-2 border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+      <div v-for="(suggestion, index) in suggestions" :key="suggestion.placeId"
         @mousedown.prevent="selectSuggestion(suggestion)"
-        class="px-4 py-3 hover:bg-blue-50 cursor-pointer transition-colors border-b border-gray-100 last:border-b-0"
-      >
+        class="px-4 py-3 hover:bg-blue-50 cursor-pointer transition-colors border-b border-gray-100 last:border-b-0">
         <div class="font-semibold text-gray-900">{{ suggestion.mainText }}</div>
         <div class="text-sm text-gray-600">{{ suggestion.secondaryText }}</div>
       </div>
     </div>
 
     <!-- Loading Indicator -->
-    <div
-      v-if="loading"
-      class="absolute right-3 top-1/2 -translate-y-1/2 mt-4"
-    >
+    <div v-if="loading" class="absolute right-3 top-1/2 -translate-y-1/2 mt-4">
       <div class="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-blue-600"></div>
     </div>
   </div>
@@ -50,11 +40,13 @@ const props = defineProps<{
   label?: string
   placeholder?: string
   required?: boolean
+  error?: string
 }>()
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]
   'addressSelected': [addressData: any]
+  'blur': []
 }>()
 
 const { searchAddress, getAddressDetails } = useApi()
@@ -73,7 +65,7 @@ watch(() => props.modelValue, (newVal) => {
 
 const handleInput = () => {
   emit('update:modelValue', searchQuery.value)
-  
+
   if (searchTimeout) {
     clearTimeout(searchTimeout)
   }
@@ -91,7 +83,7 @@ const performSearch = async () => {
   try {
     loading.value = true
     const result = await searchAddress(searchQuery.value)
-    
+
     if (result.success) {
       suggestions.value = result.data
       showSuggestions.value = true
@@ -112,7 +104,7 @@ const selectSuggestion = async (suggestion: any) => {
     showSuggestions.value = false
 
     const result = await getAddressDetails(suggestion.placeId)
-    
+
     if (result.success) {
       emit('addressSelected', result.data)
     }
@@ -126,7 +118,7 @@ const selectSuggestion = async (suggestion: any) => {
 const handleBlur = () => {
   setTimeout(() => {
     showSuggestions.value = false
+    emit('blur')
   }, 200)
 }
 </script>
-

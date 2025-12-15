@@ -1,41 +1,35 @@
 <template>
   <div class="w-full">
     <!-- Progress Steps -->
-    <div class="mb-8 bg-white rounded-xl shadow-sm p-6">
-      <div class="flex items-center justify-between mb-6">
+    <div class="mb-8 rounded-xl p-6">
+      <!-- <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold text-gray-900">Verify Your Information</h2>
         <span class="text-sm text-gray-500">Step {{ currentStep + 1 }} of {{ steps.length }}</span>
-      </div>
-      
+      </div> -->
+
       <!-- Desktop Progress Bar -->
       <div class="hidden md:flex items-center justify-between">
         <div v-for="(step, index) in steps" :key="index" class="flex-1 flex items-center">
           <div class="flex flex-col items-center flex-1">
-            <div 
-              class="w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all duration-300"
+            <div @click="goToStep(index)"
+              class="w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all duration-300 cursor-pointer hover:scale-110"
               :class="[
                 index < currentStep ? 'bg-green-500 text-white' : '',
                 index === currentStep ? 'bg-blue-600 text-white ring-4 ring-blue-100' : '',
                 index > currentStep ? 'bg-gray-200 text-gray-500' : ''
-              ]"
-            >
+              ]">
               <svg v-if="index < currentStep" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
               </svg>
               <span v-else>{{ index + 1 }}</span>
             </div>
-            <span 
-              class="mt-2 text-xs font-medium text-center"
-              :class="index <= currentStep ? 'text-gray-900' : 'text-gray-400'"
-            >
+            <span class="mt-2 text-xs font-medium text-center"
+              :class="index <= currentStep ? 'text-gray-900' : 'text-gray-400'">
               {{ step.title }}
             </span>
           </div>
-          <div 
-            v-if="index < steps.length - 1" 
-            class="flex-1 h-1 mx-2 rounded transition-all duration-300"
-            :class="index < currentStep ? 'bg-green-500' : 'bg-gray-200'"
-          />
+          <div v-if="index < steps.length - 1" class="flex-1 h-1 mx-2 rounded transition-all duration-300 -mt-3"
+            :class="index < currentStep ? 'bg-green-500' : 'bg-gray-200'" />
         </div>
       </div>
 
@@ -46,68 +40,64 @@
           <span class="text-sm text-gray-500">{{ currentStep + 1 }}/{{ steps.length }}</span>
         </div>
         <div class="w-full bg-gray-200 rounded-full h-2">
-          <div 
-            class="bg-blue-600 h-2 rounded-full transition-all duration-300"
-            :style="{ width: `${((currentStep + 1) / steps.length) * 100}%` }"
-          />
+          <div class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+            :style="{ width: `${((currentStep + 1) / steps.length) * 100}%` }" />
         </div>
       </div>
     </div>
 
     <!-- Form Content -->
-    <div class="bg-white rounded-xl shadow-sm p-6 md:p-8">
+    <div class="p-6 md:p-8">
+      <!-- Validation Error Alert -->
+      <div v-if="showValidationError"
+        class="mb-6 bg-red-50 border-2 border-red-200 rounded-lg p-4 flex items-start space-x-3">
+        <svg class="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div class="text-sm text-red-900">
+          <p class="font-semibold mb-1">Please fix the following errors:</p>
+          <p>All required fields must be filled out correctly before continuing.</p>
+        </div>
+      </div>
+
       <transition name="slide-fade" mode="out-in">
-        <component 
-          :is="currentStepComponent" 
-          :form-data="formData"
-          :mca-data="mcaData"
-          @update="updateFormData"
-        />
+        <component :is="currentStepComponent" :form-data="formData" :mca-data="mcaData" @update="updateFormData"
+          :ref="el => currentStepRef = el" />
       </transition>
 
       <!-- Navigation Buttons -->
-      <div class="flex flex-col sm:flex-row gap-4 mt-8 pt-6 border-t">
-        <button
-          v-if="currentStep > 0"
-          @click="previousStep"
-          type="button"
-          class="w-full sm:w-auto px-6 py-3 border-2 border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
-        >
+      <div class="flex flex-row flex-wrap justify-center gap-4 mt-8 pt-6 border-t">
+        <button v-if="currentStep > 0" @click="previousStep" type="button"
+          class="px-6 py-3 border-gray-300 bg-gray-200 rounded-full font-semibold text-black hover:bg-gray-200 transition-colors focus:outline-none">
           <span class="flex items-center justify-center">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
+            </svg> -->
             Previous
           </span>
         </button>
-        
-        <button
-          v-if="currentStep < steps.length - 1"
-          @click="nextStep"
-          type="button"
-          class="w-full sm:flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-lg hover:shadow-xl"
-        >
+
+        <button v-if="currentStep < steps.length - 1" @click="nextStep" type="button"
+          class="px-6 py-3 bg-white rounded-full text-black font-semibold hover:bg-white transition-all focus:outline-none">
           <span class="flex items-center justify-center">
             Continue
-            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
+            </svg> -->
           </span>
         </button>
 
-        <button
-          v-if="currentStep === steps.length - 1"
-          @click="submitForm"
-          :disabled="submitting"
-          type="button"
-          class="w-full sm:flex-1 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-semibold hover:from-green-700 hover:to-emerald-700 transition-all focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <button v-if="currentStep === steps.length - 1" @click="submitForm" :disabled="submitting" type="button"
+          class="px-6 py-3 bg-white text-black rounded-full font-semibold hover:bg-white transition-all focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">
           <span class="flex items-center justify-center">
-            <svg v-if="submitting" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+            <svg v-if="submitting" class="animate-spin -ml-1 mr-3 h-5 w-5 text-black" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+              </path>
             </svg>
-            {{ submitting ? 'Submitting...' : 'Submit Application' }}
+            {{ submitting ? 'Submitting...' : 'Submit' }}
           </span>
         </button>
       </div>
@@ -137,6 +127,8 @@ const { loadSavedData, saveData, clearSavedData } = useFormPersistence(props.mca
 
 const currentStep = ref(0)
 const submitting = ref(false)
+const showValidationError = ref(false)
+const currentStepRef = ref<any>(null)
 
 const steps = [
   { title: 'Business Info', component: StepBusinessInfo },
@@ -167,6 +159,8 @@ const formData = ref<Partial<FormData>>(savedData?.formData || {
   dba: '',
   amountRequested: '',
   hasExistingBalances: '',
+  existingLender: '',
+  existingBalance: '',
   numberOfOwners: '1',
   ssn: '',
   ownershipPercent: '',
@@ -197,7 +191,30 @@ const updateFormData = (updates: Partial<FormData>) => {
   formData.value = { ...formData.value, ...updates }
 }
 
+const validateCurrentStep = (): boolean => {
+  // Review step doesn't need validation
+  if (currentStep.value === steps.length - 1) {
+    return true
+  }
+
+  // Call validateStep on the current step component
+  if (currentStepRef.value && typeof currentStepRef.value.validateStep === 'function') {
+    return currentStepRef.value.validateStep()
+  }
+
+  return true
+}
+
 const nextStep = () => {
+  showValidationError.value = false
+
+  // Validate current step before proceeding
+  if (!validateCurrentStep()) {
+    showValidationError.value = true
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    return
+  }
+
   if (currentStep.value < steps.length - 1) {
     currentStep.value++
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -205,17 +222,46 @@ const nextStep = () => {
 }
 
 const previousStep = () => {
+  showValidationError.value = false
   if (currentStep.value > 0) {
     currentStep.value--
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 }
 
+const goToStep = (targetStep: number) => {
+  // Don't do anything if clicking on the current step
+  if (targetStep === currentStep.value) {
+    return
+  }
+
+  showValidationError.value = false
+
+  // If going backward, allow without validation
+  if (targetStep < currentStep.value) {
+    currentStep.value = targetStep
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    return
+  }
+
+  // If going forward, validate current step first
+  if (!validateCurrentStep()) {
+    showValidationError.value = true
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    return
+  }
+
+  // Move to the target step
+  currentStep.value = targetStep
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+
 const submitForm = async () => {
   submitting.value = true
   try {
     let bankStatements: any[] = []
-    
+
     if (formData.value.bankStatements && formData.value.bankStatements.length > 0) {
       try {
         const uploadResult = await uploadFiles(formData.value.bankStatements)
@@ -234,7 +280,7 @@ const submitForm = async () => {
         return
       }
     }
-    
+
     const responseData = {
       uniqueId: formData.value.uniqueId,
       isVerified: true,
@@ -248,7 +294,7 @@ const submitForm = async () => {
         phone: formData.value.phone
       }
     }
-    
+
     await submitResponse(responseData)
     clearSavedData()
     router.push('/thank-you')
@@ -280,4 +326,3 @@ const submitForm = async () => {
   opacity: 0;
 }
 </style>
-
