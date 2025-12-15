@@ -30,7 +30,7 @@
               </label>
               <input id="email" v-model="email" type="email" required autocomplete="email"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
-                placeholder="dealer@example.com" :disabled="isLoading" />
+                placeholder="user@example.com" :disabled="isLoading" />
             </div>
 
             <div>
