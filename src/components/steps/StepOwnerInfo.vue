@@ -155,14 +155,14 @@
 
       <div class="md:col-span-2">
         <label class="block text-sm font-semibold text-gray-700 mb-2">
-          Did you work with an EZBiz Funding Specialist? If so, Who? <span class="text-red-500">*</span>
+          Did you work with an Heroic Funding Specialist? If so, Who? <span class="text-red-500">*</span>
         </label>
         <input v-model="localData.fundDirectSpecialist" type="text" required :class="[
           'w-full px-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
           hasError('fundDirectSpecialist') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
         ]" placeholder="Specialist name or 'None'" @blur="validateSingleField('fundDirectSpecialist')" />
         <p v-if="hasError('fundDirectSpecialist')" class="mt-1 text-sm text-red-600">{{ getError('fundDirectSpecialist')
-        }}</p>
+          }}</p>
       </div>
     </div>
 
@@ -211,7 +211,7 @@ const validationRules = {
   ownerStreetAddress: [rules.required('Street Address')],
   ownerState: [rules.required('State')],
   ownerZip: [rules.required('ZIP Code'), rules.zipCode()],
-  fundDirectSpecialist: [rules.required('EZBiz Funding Specialist')]
+  fundDirectSpecialist: [rules.required('Heroic Funding Specialist')]
 }
 
 const validateSingleField = (fieldName: string) => {

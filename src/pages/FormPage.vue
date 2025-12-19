@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-100">
     <!-- Header -->
-    <LogoHeader logoTheme="dark" />
+    <!-- <LogoHeader logoTheme="dark" /> -->
     <!-- <header class="bg-white shadow-sm sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex items-center space-x-3">
@@ -10,7 +10,7 @@
             <span class="text-white font-bold text-xl">FD</span>
           </div>
           <div>
-            <h1 class="text-2xl font-bold text-gray-900">EZBiz Funding</h1>
+            <h1 class="text-2xl font-bold text-gray-900">Heroic Funding</h1>
             <p class="text-xs text-gray-500">Business Funding Verification</p>
           </div>
         </div>
@@ -64,6 +64,7 @@ const mcaData = ref<MCAData | null>(null)
 
 const formatDateForInput = (dateInput: string | Date) => {
   let date;
+  if (!dateInput) return ''
 
   // Handle different input types
   if (dateInput instanceof Date) {

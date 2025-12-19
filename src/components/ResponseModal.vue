@@ -135,7 +135,7 @@
                   :value="'$' + formData.amountRequested" />
                 <InfoItem v-if="formData.hasExistingBalances" label="Has Existing Balances"
                   :value="formData.hasExistingBalances" />
-                <InfoItem v-if="formData.fundDirectSpecialist" label="EZBiz Funding Specialist"
+                <InfoItem v-if="formData.fundDirectSpecialist" label="Heroic Funding Specialist"
                   :value="formData.fundDirectSpecialist" />
               </div>
             </div>
@@ -174,7 +174,7 @@
                     <div class="text-left">
                       <p class="text-sm font-medium text-gray-900">{{ file.originalName }}</p>
                       <p class="text-xs text-gray-500">{{ formatFileSize(file.size) }} • {{ formatDate(file.uploadedAt)
-                      }}</p>
+                        }}</p>
                     </div>
                   </div>
                   <div class="flex items-center gap-2">

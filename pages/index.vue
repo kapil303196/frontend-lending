@@ -8,7 +8,7 @@
         </div>
 
         <h1 class="text-4xl font-bold text-gray-900 mb-4">
-          Welcome to EZBiz Funding
+          Welcome to Heroic Funding
         </h1>
 
         <p class="text-lg text-gray-600 mb-8">
@@ -57,7 +57,7 @@
 
       <div class="mt-8 text-center">
         <p class="text-sm text-gray-500">
-          © 2024 EZBiz Funding. All rights reserved.
+          © 2024 Heroic Funding. All rights reserved.
         </p>
       </div>
     </div>
@@ -66,6 +66,6 @@
 
 <script setup lang="ts">
 useHead({
-  title: 'EZBiz Funding - Business Funding Verification'
+  title: 'Heroic Funding - Business Funding Verification'
 })
 </script>
