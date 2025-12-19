@@ -393,6 +393,7 @@
     <ResponseModal
       :isOpen="isModalOpen"
       :response="selectedResponse"
+      :isAdminView="true"
       @close="closeModal"
       @statusUpdated="handleStatusUpdate"
     />

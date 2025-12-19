@@ -60,7 +60,7 @@
       <div v-if="localData.hasExistingBalances === 'yes'" class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-2">
-            Lender Name <span class="text-red-500">*</span>
+            Funder Name <span class="text-red-500">*</span>
           </label>
           <input v-model="localData.existingLender" type="text" required :class="[
             'w-full px-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
@@ -132,7 +132,7 @@ const validationRules = {
   monthlyRevenue: [rules.required('Monthly Revenue'), rules.minValue(1000, 'Monthly Revenue')],
   hasExistingBalances: [rules.required('Existing Balances')],
   numberOfOwners: [rules.required('Number of Owners'), rules.minValue(1, 'Number of Owners')],
-  existingLender: [rules.required('Lender Name')],
+  existingLender: [rules.required('Funder Name')],
   existingBalance: [rules.required('Balance Remaining')]
 }
 

@@ -260,8 +260,13 @@
     </main>
 
     <!-- Response Modal -->
-    <ResponseModal :isOpen="isModalOpen" :response="selectedResponse" @close="closeModal"
-      @statusUpdated="handleStatusUpdate" />
+    <ResponseModal
+      :isOpen="isModalOpen"
+      :response="selectedResponse"
+      :isAdminView="true"
+      @close="closeModal"
+      @statusUpdated="handleStatusUpdate"
+    />
   </div>
 </template>
 

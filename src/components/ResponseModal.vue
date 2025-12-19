@@ -28,7 +28,7 @@
           <!-- Content -->
           <div class="px-4 md:px-6 py-4 md:py-6 flex-1">
             <!-- Status -->
-            <div class="mb-6">
+            <div v-if="isAdminView" class="mb-6">
               <label class="block text-sm font-medium text-gray-700 mb-2">Status Management</label>
               <div class="flex flex-wrap items-center gap-2 sm:gap-3">
                 <span :class="statusColorClass"
@@ -260,9 +260,12 @@ const InfoItem = defineComponent({
 interface Props {
   isOpen: boolean;
   response: any;
+  isAdminView?: boolean;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  isAdminView: false
+});
 const emit = defineEmits<{
   (e: 'close'): void;
   (e: 'statusUpdated', response: any): void;
