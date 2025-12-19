@@ -40,7 +40,7 @@
         <input v-model="localData.phone" type="tel" required
           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
           placeholder="E.g. +1 300 400 5000" @input="formatPhone" />
-        <p class="mt-1 text-xs text-gray-500">By submitting your phone number you accept to receive messages from EZBiz
+        <p class="mt-1 text-xs text-gray-500">By submitting your phone number you accept to receive messages from Heroic
           Funding</p>
       </div>
 
@@ -135,7 +135,7 @@
 
       <div class="md:col-span-2">
         <label class="block text-sm font-semibold text-gray-700 mb-2">
-          Did you work with a EZBiz Funding Specialist? If so, Who? <span class="text-red-500">*</span>
+          Did you work with a Heroic Funding Specialist? If so, Who? <span class="text-red-500">*</span>
         </label>
         <input v-model="localData.fundDirectSpecialist" type="text" required
           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"

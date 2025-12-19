@@ -9,7 +9,7 @@
             <span class="text-white font-bold text-xl">FD</span>
           </div>
           <div>
-            <h1 class="text-2xl font-bold text-gray-900">EZBiz Funding</h1>
+            <h1 class="text-2xl font-bold text-gray-900">Heroic Funding</h1>
             <p class="text-xs text-gray-500">Business Funding Verification</p>
           </div>
         </div>
