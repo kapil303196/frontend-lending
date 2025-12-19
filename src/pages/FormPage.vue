@@ -64,6 +64,7 @@ const mcaData = ref<MCAData | null>(null)
 
 const formatDateForInput = (dateInput: string | Date) => {
   let date;
+  if (!dateInput) return ''
 
   // Handle different input types
   if (dateInput instanceof Date) {
