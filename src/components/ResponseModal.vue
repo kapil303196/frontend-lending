@@ -18,11 +18,22 @@
               </h2>
               <p class="text-sm text-gray-500 mt-1">ID: {{ response.uniqueId }}</p>
             </div>
-            <button @click="close" class="text-gray-400 hover:text-gray-600 transition-colors">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+            <div class="flex items-center gap-2">
+              <!-- Delete Button (Admin only) -->
+              <button v-if="isAdminView" @click="handleDelete"
+                class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                title="Delete application">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+              <button @click="close" class="text-gray-400 hover:text-gray-600 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
           </div>
 
           <!-- Content -->
@@ -140,6 +151,21 @@
               </div>
             </div>
 
+            <div v-if="hasExistingBalances" class="mb-8">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Existing Balances
+              </h3>
+              <div class="bg-gray-50 rounded-lg p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <InfoItem v-if="formData.existingLender" label="Founder Name" :value="formData.existingLender" />
+                <InfoItem v-if="formData.existingBalance" label="Balance Remaining"
+                  :value="'$' + formData.existingBalance" />
+              </div>
+            </div>
+
             <!-- User Contact -->
             <div v-if="response.userContact" class="mb-8">
               <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
@@ -239,6 +265,7 @@
 <script setup lang="ts">
 import { computed, ref, h, onMounted, defineComponent } from 'vue';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import { config } from '../config';
 import { useAdminConfig } from '../composables/useAdminConfig';
 import FileViewerModal from './FileViewerModal.vue';
@@ -269,6 +296,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (e: 'close'): void;
   (e: 'statusUpdated', response: any): void;
+  (e: 'deleted', responseId: string): void;
 }>();
 
 const { config: adminConfig, fetchConfig } = useAdminConfig();
@@ -300,6 +328,11 @@ const hasOwnerInfo = computed(() => {
 const hasFundingInfo = computed(() => {
   const fd = formData.value;
   return !!(fd.amountRequested || fd.hasExistingBalances || fd.fundDirectSpecialist);
+});
+
+const hasExistingBalances = computed(() => {
+  const fd = formData.value;
+  return fd?.hasExistingBalances?.toLowerCase() == 'yes';
 });
 
 const statusColorClass = computed(() => {
@@ -352,6 +385,45 @@ const updateStatus = async (newStatus: string) => {
     updateMessageClass.value = 'bg-red-50 text-red-800 border border-red-200';
   } finally {
     isUpdatingStatus.value = false;
+  }
+};
+
+const handleDelete = async () => {
+  const result = await Swal.fire({
+    title: 'Are you sure?',
+    text: `Do you want to delete the application for "${props.response.formData?.legalBusinessName || props.response.formData?.businessInfo?.businessName || 'this business'}"?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#dc2626',
+    cancelButtonColor: '#6b7280',
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'Cancel'
+  });
+
+  if (result.isConfirmed) {
+    try {
+      await axios.delete(`${config.apiUrl}/responses/${props.response._id}`);
+
+      // Show success message
+      await Swal.fire({
+        title: 'Deleted!',
+        text: 'The application has been deleted.',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
+      });
+
+      // Emit deleted event and close modal
+      emit('deleted', props.response._id);
+      close();
+    } catch (error: any) {
+      console.error('Delete error:', error);
+      Swal.fire({
+        title: 'Error!',
+        text: error.response?.data?.message || 'Failed to delete application',
+        icon: 'error'
+      });
+    }
   }
 };
 

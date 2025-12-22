@@ -233,7 +233,7 @@
         <div v-else
           class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 lg:gap-6">
           <ResponseCard v-for="response in responses" :key="response._id" :response="response"
-            @click="openModal(response)" />
+            @click="openModal(response)" @delete="handleDelete" />
         </div>
 
         <!-- Loading More Indicator -->
@@ -260,13 +260,8 @@
     </main>
 
     <!-- Response Modal -->
-    <ResponseModal
-      :isOpen="isModalOpen"
-      :response="selectedResponse"
-      :isAdminView="true"
-      @close="closeModal"
-      @statusUpdated="handleStatusUpdate"
-    />
+    <ResponseModal :isOpen="isModalOpen" :response="selectedResponse" :isAdminView="true" @close="closeModal"
+      @statusUpdated="handleStatusUpdate" @deleted="handleModalDelete" />
   </div>
 </template>
 
@@ -274,6 +269,7 @@
 import { ref, computed, onMounted, watch, onUnmounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import { useAuth } from '../composables/useAuth';
 import { useAdminConfig } from '../composables/useAdminConfig';
 import ResponseCard from '../components/ResponseCard.vue';
@@ -482,6 +478,49 @@ const handleStatusUpdate = (updatedResponse: any) => {
   if (index !== -1) {
     responses.value[index] = updatedResponse;
   }
+};
+
+const handleDelete = async (response: any) => {
+  const result = await Swal.fire({
+    title: 'Are you sure?',
+    text: `Do you want to delete the application for "${response.formData?.legalBusinessName || response.formData?.businessInfo?.businessName || 'this business'}"?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#dc2626',
+    cancelButtonColor: '#6b7280',
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'Cancel'
+  });
+
+  if (result.isConfirmed) {
+    try {
+      await axios.delete(`${config.apiUrl}/responses/${response._id}`);
+
+      // Remove from local state
+      responses.value = responses.value.filter(r => r._id !== response._id);
+
+      // Show success message
+      Swal.fire({
+        title: 'Deleted!',
+        text: 'The application has been deleted.',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
+      });
+    } catch (err: any) {
+      console.error('Delete error:', err);
+      Swal.fire({
+        title: 'Error!',
+        text: err.response?.data?.message || 'Failed to delete application',
+        icon: 'error'
+      });
+    }
+  }
+};
+
+const handleModalDelete = (responseId: string) => {
+  // Remove from local state when deleted from modal
+  responses.value = responses.value.filter(r => r._id !== responseId);
 };
 
 const handleLogout = () => {
