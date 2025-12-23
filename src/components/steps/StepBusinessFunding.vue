@@ -40,48 +40,79 @@
         </label>
         <div class="flex gap-4">
           <label class="flex items-center space-x-3 cursor-pointer group">
-            <input v-model="localData.hasExistingBalances" type="radio" value="yes" required
-              class="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500"
-              @change="validateSingleField('hasExistingBalances')" />
+            <input v-model="localData.hasExistingBalances" type="radio" value="yes" name="hasExistingBalances" required
+              class="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500" @change="onBalancesChange" />
             <span class="text-gray-700 group-hover:text-gray-900 font-medium">Yes</span>
           </label>
           <label class="flex items-center space-x-3 cursor-pointer group">
-            <input v-model="localData.hasExistingBalances" type="radio" value="no" required
-              class="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500"
-              @change="validateSingleField('hasExistingBalances')" />
+            <input v-model="localData.hasExistingBalances" type="radio" value="no" name="hasExistingBalances" required
+              class="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500" @change="onBalancesChange" />
             <span class="text-gray-700 group-hover:text-gray-900 font-medium">No</span>
           </label>
         </div>
         <p v-if="hasError('hasExistingBalances')" class="mt-1 text-sm text-red-600">{{ getError('hasExistingBalances')
-          }}</p>
+        }}</p>
       </div>
 
-      <!-- Conditional Fields for Existing Balances -->
-      <div v-if="localData.hasExistingBalances === 'yes'" class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">
-            Funder Name <span class="text-red-500">*</span>
-          </label>
-          <input v-model="localData.existingLender" type="text" required :class="[
-            'w-full px-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
-            hasError('existingLender') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
-          ]" placeholder="E.g. ABC Capital" @blur="validateSingleField('existingLender')" />
-          <p v-if="hasError('existingLender')" class="mt-1 text-sm text-red-600">{{ getError('existingLender') }}</p>
+      <!-- Multiple Funders Section -->
+      <div v-if="localData.hasExistingBalances === 'yes'" class="md:col-span-2 space-y-4">
+        <div class="flex items-center justify-between mb-2">
+          <h4 class="text-lg font-semibold text-gray-900">Existing Funders</h4>
+          <button type="button" @click="addFunder"
+            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Add Another Funder
+          </button>
         </div>
 
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">
-            Balance Remaining <span class="text-red-500">*</span>
-          </label>
-          <div class="relative">
-            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">$</span>
-            <input v-model="localData.existingBalance" type="text" required :class="[
-              'w-full pl-8 pr-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
-              hasError('existingBalance') ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
-            ]" placeholder="10,000" @input="formatBalance" @blur="validateSingleField('existingBalance')" />
+        <!-- Funder Items -->
+        <div v-for="(funder, index) in funders" :key="index"
+          class="bg-gray-50 border-2 border-gray-200 rounded-lg p-4 space-y-4">
+          <div class="flex items-center justify-between mb-2">
+            <h5 class="text-sm font-semibold text-gray-700">Funder #{{ index + 1 }}</h5>
+            <button v-if="funders.length > 1" type="button" @click="removeFunder(index)"
+              class="text-red-600 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-colors"
+              title="Remove funder">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
           </div>
-          <p v-if="hasError('existingBalance')" class="mt-1 text-sm text-red-600">{{ getError('existingBalance') }}</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                Funder Name <span class="text-red-500">*</span>
+              </label>
+              <input v-model="funder.funderName" type="text" required :class="[
+                'w-full px-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
+                hasError(`funder_${index}_name`) ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+              ]" placeholder="E.g. ABC Capital" @blur="validateFunder(index)" />
+              <p v-if="hasError(`funder_${index}_name`)" class="mt-1 text-sm text-red-600">{{
+                getError(`funder_${index}_name`) }}</p>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2">
+                Balance Remaining <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">$</span>
+                <input v-model="funder.balanceRemaining" type="text" required :class="[
+                  'w-full pl-8 pr-4 py-3 border-2 rounded-lg focus:ring-2 transition-all outline-none',
+                  hasError(`funder_${index}_balance`) ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'
+                ]" placeholder="10,000" @input="formatFunderBalance($event, index)" @blur="validateFunder(index)" />
+              </div>
+              <p v-if="hasError(`funder_${index}_balance`)" class="mt-1 text-sm text-red-600">{{
+                getError(`funder_${index}_balance`) }}</p>
+            </div>
+          </div>
         </div>
+
+        <p v-if="hasError('existingFunders')" class="text-sm text-red-600">{{ getError('existingFunders') }}</p>
       </div>
 
       <div class="md:col-span-2">
@@ -126,23 +157,24 @@ const emit = defineEmits<{
 const localData = ref({ ...props.formData })
 const { rules, validateField, hasError, getError, clearFieldError, errors } = useFormValidation()
 
+// Initialize funders array from formData
+const funders = ref<Array<{ funderName: string; balanceRemaining: string }>>(
+  localData.value.existingFunders && localData.value.existingFunders.length > 0
+    ? [...localData.value.existingFunders]
+    : [{ funderName: '', balanceRemaining: '' }]
+)
+
 // Define validation rules for this step
 const validationRules = {
   amountRequested: [rules.required('Amount Requested'), rules.minValue(1000, 'Amount Requested')],
   monthlyRevenue: [rules.required('Monthly Revenue'), rules.minValue(1000, 'Monthly Revenue')],
   hasExistingBalances: [rules.required('Existing Balances')],
   numberOfOwners: [rules.required('Number of Owners'), rules.minValue(1, 'Number of Owners')],
-  existingLender: [rules.required('Funder Name')],
-  existingBalance: [rules.required('Balance Remaining')]
+  existingFunders: [rules.required('At least one funder')]
 }
 
 const validateSingleField = (fieldName: string) => {
   clearFieldError(fieldName)
-
-  // Skip validation for conditional fields if not applicable
-  if ((fieldName === 'existingLender' || fieldName === 'existingBalance') && localData.value.hasExistingBalances !== 'yes') {
-    return
-  }
 
   const fieldRules = validationRules[fieldName as keyof typeof validationRules]
   if (fieldRules) {
@@ -153,26 +185,125 @@ const validateSingleField = (fieldName: string) => {
   }
 }
 
+const validateFunder = (index: number) => {
+  const funder = funders.value[index]
+
+  // Clear previous errors
+  clearFieldError(`funder_${index}_name`)
+  clearFieldError(`funder_${index}_balance`)
+
+  // Validate funder name
+  if (!funder.funderName || funder.funderName.trim() === '') {
+    errors.value[`funder_${index}_name`] = 'Funder name is required'
+  }
+
+  // Validate balance
+  if (!funder.balanceRemaining || funder.balanceRemaining.trim() === '') {
+    errors.value[`funder_${index}_balance`] = 'Balance is required'
+  } else {
+    const numericValue = parseFloat(funder.balanceRemaining.replace(/,/g, ''))
+    if (isNaN(numericValue) || numericValue < 1) {
+      errors.value[`funder_${index}_balance`] = 'Balance must be at least $1'
+    }
+  }
+}
+
+const validateAllFunders = (): boolean => {
+  if (localData.value.hasExistingBalances !== 'yes') {
+    return true
+  }
+
+  // Clear previous funder errors
+  clearFieldError('existingFunders')
+
+  // Check if at least one funder exists
+  if (funders.value.length === 0) {
+    errors.value['existingFunders'] = 'At least one funder is required'
+    return false
+  }
+
+  let isValid = true
+  funders.value.forEach((_, index) => {
+    validateFunder(index)
+    if (hasError(`funder_${index}_name`) || hasError(`funder_${index}_balance`)) {
+      isValid = false
+    }
+  })
+
+  return isValid
+}
+
 const validateStep = (): boolean => {
   let isValid = true
+
+  // Validate basic fields
   Object.keys(validationRules).forEach(fieldName => {
+    if (fieldName === 'existingFunders') {
+      return // Skip, will validate separately
+    }
     validateSingleField(fieldName)
     if (hasError(fieldName)) {
       isValid = false
     }
   })
+
+  // Validate funders if applicable
+  if (localData.value.hasExistingBalances === 'yes') {
+    if (!validateAllFunders()) {
+      isValid = false
+    }
+  }
+
   return isValid
 }
 
-watch(localData, (newVal) => {
-  // Clear conditional fields if user switches back to "No"
-  if (newVal.hasExistingBalances === 'no') {
-    newVal.existingLender = ''
-    newVal.existingBalance = ''
-    clearFieldError('existingLender')
-    clearFieldError('existingBalance')
+const onBalancesChange = () => {
+  validateSingleField('hasExistingBalances')
+
+  if (localData.value.hasExistingBalances === 'no') {
+    funders.value = [{ funderName: '', balanceRemaining: '' }]
+    localData.value.existingFunders = []
+
+    // Clear all funder errors
+    Object.keys(errors.value).forEach(key => {
+      if (key.startsWith('funder_')) {
+        clearFieldError(key)
+      }
+    })
+    clearFieldError('existingFunders')
   }
+}
+
+const addFunder = () => {
+  funders.value.push({ funderName: '', balanceRemaining: '' })
+}
+
+const removeFunder = (index: number) => {
+  if (funders.value.length > 1) {
+    funders.value.splice(index, 1)
+    // Clear errors for removed funder
+    clearFieldError(`funder_${index}_name`)
+    clearFieldError(`funder_${index}_balance`)
+    // Update localData
+    syncFundersToLocalData()
+  }
+}
+
+const syncFundersToLocalData = () => {
+  localData.value.existingFunders = funders.value.filter(
+    f => f.funderName.trim() !== '' || f.balanceRemaining.trim() !== ''
+  )
+}
+
+watch(localData, (newVal) => {
   emit('update', newVal)
+}, { deep: true })
+
+// Watch funders array for changes
+watch(funders, () => {
+  if (localData.value.hasExistingBalances === 'yes') {
+    syncFundersToLocalData()
+  }
 }, { deep: true })
 
 const formatCurrency = (e: Event) => {
@@ -195,14 +326,14 @@ const formatRevenue = (e: Event) => {
   clearFieldError('monthlyRevenue')
 }
 
-const formatBalance = (e: Event) => {
+const formatFunderBalance = (e: Event, index: number) => {
   const input = e.target as HTMLInputElement
   let value = input.value.replace(/[^0-9]/g, '')
   if (value) {
     value = parseInt(value).toLocaleString()
   }
-  localData.value.existingBalance = value
-  clearFieldError('existingBalance')
+  funders.value[index].balanceRemaining = value
+  clearFieldError(`funder_${index}_balance`)
 }
 
 defineExpose({ validateStep })

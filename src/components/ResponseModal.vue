@@ -94,7 +94,7 @@
                 <InfoItem v-if="formData.businessEmail" label="Business Email" :value="formData.businessEmail" />
                 <InfoItem v-if="formData.ein" label="EIN" :value="formData.ein" />
                 <InfoItem v-if="formData.businessStartDate" label="Business Start Date"
-                  :value="formData.businessStartDate" />
+                  :value="formatUSDate(formData.businessStartDate)" />
                 <InfoItem v-if="formData.streetAddress" label="Street Address" :value="formData.streetAddress" />
                 <InfoItem v-if="formData.city" label="City" :value="formData.city" />
                 <InfoItem v-if="formData.state" label="State" :value="formData.state" />
@@ -119,8 +119,9 @@
                 <InfoItem v-if="formData.lastName" label="Last Name" :value="formData.lastName" />
                 <InfoItem v-if="formData.ownerEmail" label="Email" :value="formData.ownerEmail" />
                 <InfoItem v-if="formData.phone" label="Phone" :value="formData.phone" />
-                <InfoItem v-if="formData.dateOfBirth" label="Date of Birth" :value="formData.dateOfBirth" />
-                <InfoItem v-if="formData.ssn" label="SSN" :value="formData.ssn" />
+                <InfoItem v-if="formData.dateOfBirth" label="Date of Birth"
+                  :value="formatUSDate(formData.dateOfBirth)" />
+                <InfoItem v-if="formData.ssn" label="SSN" :value="formatSSN(formData.ssn)" />
                 <InfoItem v-if="formData.ownershipPercent" label="Ownership %"
                   :value="String(formData.ownershipPercent) + '%'" />
                 <InfoItem v-if="formData.numberOfOwners" label="Number of Owners" :value="formData.numberOfOwners" />
@@ -159,8 +160,25 @@
                 </svg>
                 Existing Balances
               </h3>
-              <div class="bg-gray-50 rounded-lg p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <InfoItem v-if="formData.existingLender" label="Founder Name" :value="formData.existingLender" />
+
+              <!-- Multiple Funders Display -->
+              <div v-if="formData.existingFunders && formData.existingFunders.length > 0" class="space-y-3">
+                <div v-for="(funder, index) in formData.existingFunders" :key="index"
+                  class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold text-gray-500 uppercase">Funder #{{ index + 1 }}</span>
+                  </div>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <InfoItem label="Funder Name" :value="funder.funderName" />
+                    <InfoItem label="Balance Remaining" :value="'$' + funder.balanceRemaining" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Legacy Single Funder Display (Backward Compatibility) -->
+              <div v-else-if="formData.existingLender || formData.existingBalance"
+                class="bg-gray-50 rounded-lg p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <InfoItem v-if="formData.existingLender" label="Funder Name" :value="formData.existingLender" />
                 <InfoItem v-if="formData.existingBalance" label="Balance Remaining"
                   :value="'$' + formData.existingBalance" />
               </div>
@@ -510,6 +528,31 @@ const getFileIconColor = (filename: string) => {
   if (['doc', 'docx'].includes(ext || '')) return 'text-blue-700';
   if (['xls', 'xlsx'].includes(ext || '')) return 'text-green-600';
   return 'text-gray-600';
+};
+
+const formatUSDate = (date: string) => {
+  if (!date) return 'N/A';
+  // Check if date is in YYYY-MM-DD format
+  if (date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    const [year, month, day] = date.split('-');
+    return `${month}/${day}/${year}`;
+  }
+  // Fallback to locale date string
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return date;
+  return d.toLocaleDateString('en-US', {
+    month: '2-digit',
+    day: '2-digit',
+    year: 'numeric'
+  });
+};
+
+const formatSSN = (ssn: string) => {
+  if (!ssn) return 'N/A';
+  // Remove non-digits
+  const cleanSSN = ssn.replace(/\D/g, '');
+  if (cleanSSN.length !== 9) return ssn; // Return original if not 9 digits
+  return `${cleanSSN.slice(0, 3)}-${cleanSSN.slice(3, 5)}-${cleanSSN.slice(5)}`;
 };
 </script>
 

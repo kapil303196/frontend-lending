@@ -44,6 +44,11 @@ export interface FormData {
   amountRequested: string
   monthlyRevenue: string
   hasExistingBalances: string
+  existingFunders?: Array<{
+    funderName: string
+    balanceRemaining: string
+  }>
+  // Legacy fields for backward compatibility
   existingLender?: string
   existingBalance?: string
   numberOfOwners: string
