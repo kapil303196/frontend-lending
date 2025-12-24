@@ -56,9 +56,9 @@
           <a href="mailto:sales@funddirect.us" class="text-blue-600 hover:text-blue-700 font-semibold block mb-2">
             sales@funddirect.us
           </a>
-          <a href="tel:8006412609" class="text-blue-600 hover:text-blue-700 font-semibold text-lg">
+          <!-- <a href="tel:8006412609" class="text-blue-600 hover:text-blue-700 font-semibold text-lg">
             (800) 641-2609
-          </a>
+          </a> -->
         </div>
 
         <!-- Security Notice -->

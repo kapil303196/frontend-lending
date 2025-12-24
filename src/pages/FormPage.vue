@@ -34,8 +34,8 @@
         </svg>
         <h2 class="text-2xl font-bold text-gray-900 mb-2">Unable to Load Application</h2>
         <p class="text-gray-600 mb-4">{{ error }}</p>
-        <p class="text-sm text-gray-500">Please contact us at <a href="tel:8006412609"
-            class="text-blue-600 font-semibold">(800) 641-2609</a></p>
+        <!-- <p class="text-sm text-gray-500">Please contact us at <a href="tel:8006412609"
+            class="text-blue-600 font-semibold">(800) 641-2609</a></p> -->
       </div>
     </div>
 
