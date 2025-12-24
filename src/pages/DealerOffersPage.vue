@@ -5,7 +5,7 @@
       <div class="w-full px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
           <div class="flex items-center gap-5">
-            <img src="/assets/images/lender-logo-light-2.svg" style="width: 130px;" alt="" />
+            <!-- <img src="/assets/images/lender-logo-light-2.svg" style="width: 130px;" alt="" /> -->
             <div>
               <!-- <h1 class="text-lg sm:text-xl font-bold text-gray-900 leading-tight">Dealer Portal</h1>
               <p class="text-xs text-gray-500 hidden sm:block">Manage rejected offers</p> -->
@@ -164,7 +164,7 @@
                       <span class="truncate">{{ getOwnerName(item.response) || 'Owner unknown' }}</span>
                       <span class="hidden sm:inline text-gray-300">•</span>
                       <span class="hidden sm:inline truncate" v-if="getEmail(item.response)">{{ getEmail(item.response)
-                        }}</span>
+                      }}</span>
                     </p>
                   </div>
                 </div>
@@ -337,7 +337,7 @@
                     </button>
                     <div class="flex items-center gap-2">
                       <span v-if="item.saveMessage" class="text-sm text-emerald-600 font-medium">{{ item.saveMessage
-                        }}</span>
+                      }}</span>
                     </div>
                   </div>
                 </div>
